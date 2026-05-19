@@ -6,805 +6,923 @@
 <title>Jantar dos Casais</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --cream:#F7F3EE;--champagne:#E8D5B7;--gold:#C9A84C;--gold-light:#E4C67A;
-    --dark:#1A1612;--brown:#3D2B1F;--brown-mid:#6B4C3B;--text:#2C1F14;
-    --text-light:#7A6352;--surface:#FFFFFF;--surface-warm:#FBF8F4;
-    --border:#E0D0BC;--success:#4A7C59;--error:#9B3A3A;
-    --radius:12px;--shadow:0 4px 24px rgba(26,22,18,0.10);
-    --shadow-lg:0 12px 48px rgba(26,22,18,0.18);
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px;}
-  h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:400;}
+:root{
+  --cream:#F7F3EE;--champagne:#E8D5B7;--gold:#C9A84C;--gold-light:#E4C67A;
+  --dark:#1A1612;--brown:#3D2B1F;--brown-mid:#6B4C3B;--text:#2C1F14;
+  --text-light:#7A6352;--surface:#FFF;--warm:#FBF8F4;
+  --border:#E0D0BC;--ok:#4A7C59;--err:#9B3A3A;
+  --r:12px;--sh:0 4px 24px rgba(26,22,18,.10);--shl:0 12px 48px rgba(26,22,18,.18);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;font-size:15px;}
+h1,h2,h3{font-family:'Cormorant Garamond',serif;font-weight:400;}
 
-  /* HEADER */
-  .app-header{background:var(--dark);color:var(--champagne);text-align:center;padding:48px 24px 36px;position:relative;overflow:hidden;}
-  .app-header::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(201,168,76,0.18) 0%,transparent 70%);}
-  .ornament{font-size:13px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:.85;}
-  .app-header h1{font-size:clamp(2.2rem,6vw,3.6rem);font-weight:300;font-style:italic;letter-spacing:1px;line-height:1.1;margin-bottom:8px;}
-  .subtitle{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--champagne);opacity:.6;margin-bottom:20px;}
-  .event-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,0.15);border:1px solid rgba(201,168,76,0.35);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold-light);}
-  .divider-gold{display:flex;align-items:center;gap:12px;margin:16px auto;max-width:200px;color:var(--gold);font-size:18px;opacity:.5;}
-  .divider-gold::before,.divider-gold::after{content:'';flex:1;height:1px;background:currentColor;}
+/* HEADER */
+.hd{background:var(--dark);color:var(--champagne);text-align:center;padding:44px 20px 32px;position:relative;overflow:hidden;}
+.hd::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 120%,rgba(201,168,76,.18) 0%,transparent 70%);}
+.orn{font-size:12px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;opacity:.85;position:relative;}
+.hd h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:300;font-style:italic;letter-spacing:1px;line-height:1.1;margin-bottom:8px;position:relative;}
+.hd .sub{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--champagne);opacity:.55;margin-bottom:18px;position:relative;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.35);border-radius:100px;padding:6px 18px;font-size:13px;color:var(--gold-light);position:relative;}
+.dg{display:flex;align-items:center;gap:12px;margin:14px auto;max-width:180px;color:var(--gold);font-size:16px;opacity:.45;position:relative;}
+.dg::before,.dg::after{content:'';flex:1;height:1px;background:currentColor;}
 
-  /* SYNC BAR */
-  .sync-bar{background:var(--dark);color:var(--gold);font-size:11px;letter-spacing:2px;text-transform:uppercase;text-align:center;padding:5px;display:flex;align-items:center;justify-content:center;gap:6px;}
-  .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite;}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* SYNC BAR */
+.sync{background:#111;color:var(--gold);font-size:10px;letter-spacing:2px;text-transform:uppercase;text-align:center;padding:5px 12px;display:flex;align-items:center;justify-content:center;gap:7px;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease infinite;flex-shrink:0;}
+.dot.spin{animation-duration:.5s;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
 
-  /* TABS */
-  .tab-nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,22,18,0.06);}
-  .tab-btn{background:none;border:none;cursor:pointer;padding:14px 28px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);border-bottom:2px solid transparent;transition:all .25s;}
-  .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:500;}
-  .tab-btn:hover{color:var(--brown);}
+/* TABS */
+.tabs{background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(26,22,18,.06);}
+.tb{background:none;border:none;cursor:pointer;padding:14px 26px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);border-bottom:2px solid transparent;transition:all .22s;}
+.tb.on{color:var(--gold);border-bottom-color:var(--gold);font-weight:500;}
+.tb:hover{color:var(--brown);}
 
-  .container{max-width:680px;margin:0 auto;padding:32px 16px 80px;}
-  .page{display:none;animation:fadeIn .35s ease;}
-  .page.active{display:block;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.wrap{max-width:680px;margin:0 auto;padding:28px 14px 80px;}
+.pg{display:none;animation:fi .3s ease;} .pg.on{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
 
-  /* CARDS */
-  .card{background:var(--surface);border-radius:var(--radius);border:1px solid var(--border);padding:24px;margin-bottom:16px;box-shadow:var(--shadow);}
-  .card-title{font-size:1.4rem;font-style:italic;color:var(--brown);margin-bottom:4px;font-family:'Cormorant Garamond',serif;}
-  .card-meta{font-size:12px;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;}
+/* CARDS */
+.card{background:var(--surface);border-radius:var(--r);border:1px solid var(--border);padding:22px;margin-bottom:14px;box-shadow:var(--sh);}
+.ct{font-size:1.35rem;font-style:italic;color:var(--brown);margin-bottom:3px;font-family:'Cormorant Garamond',serif;}
+.cm{font-size:11px;color:var(--text-light);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
 
-  /* EVENT INFO */
-  .event-info-bar{background:var(--surface-warm);border:1px solid var(--champagne);border-radius:var(--radius);padding:20px 24px;margin-bottom:28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
-  .ei-item{text-align:center;}
-  .ei-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);}
-  .ei-value{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--brown);}
-  .ei-value.price{color:var(--gold);font-weight:600;}
+/* EVENT INFO */
+.eib{background:var(--warm);border:1px solid var(--champagne);border-radius:var(--r);padding:18px 22px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.eil{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);}
+.eiv{font-family:'Cormorant Garamond',serif;font-size:1.45rem;color:var(--brown);}
+.eiv.p{color:var(--gold);font-weight:600;}
 
-  /* FOOD LIST */
-  .section-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--text-light);margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-  .section-label::after{content:'';flex:1;height:1px;background:var(--border);}
-  .food-grid{display:grid;gap:10px;}
-  .food-item{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .22s;position:relative;overflow:hidden;}
-  .food-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transition:transform .22s;}
-  .food-item:hover:not(.taken):not(.done){border-color:var(--gold);box-shadow:0 4px 16px rgba(201,168,76,0.12);transform:translateY(-1px);}
-  .food-item:hover:not(.taken):not(.done)::before{transform:scaleY(1);}
-  .food-item.taken{background:#F9F5F0;border-color:var(--border);cursor:default;opacity:.72;}
-  .food-item.taken::before{background:var(--error);transform:scaleY(1);}
-  .food-item.done{background:#F0F7F3;border-color:#C3DCCB;cursor:default;opacity:.78;}
-  .food-item.done::before{background:var(--success);transform:scaleY(1);}
-  .food-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--text);}
-  .food-type-tag{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light);margin-top:2px;}
-  .food-status{font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:100px;font-weight:500;white-space:nowrap;}
-  .food-status.free{background:rgba(201,168,76,0.12);color:var(--gold);}
-  .food-status.taken{background:rgba(154,90,90,0.10);color:var(--error);}
-  .food-status.done{background:rgba(74,124,89,0.12);color:var(--success);}
-  .food-item-left{display:flex;flex-direction:column;}
-  .tag-doce{color:#C9784C;} .tag-salgado{color:#5C7A4A;}
+/* FOOD LIST */
+.sl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--text-light);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--border);}
+.fg{display:grid;gap:9px;}
 
-  /* MODAL */
-  .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(26,22,18,0.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s;}
-  .modal-overlay.open{opacity:1;pointer-events:all;}
-  .modal{background:var(--surface);border-radius:16px;padding:32px;max-width:440px;width:100%;box-shadow:var(--shadow-lg);transform:translateY(16px) scale(.97);transition:transform .25s;max-height:90vh;overflow-y:auto;}
-  .modal-overlay.open .modal{transform:none;}
-  .modal h2{font-size:1.8rem;font-style:italic;color:var(--brown);margin-bottom:4px;}
-  .modal-sub{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:24px;}
-  .step{display:none;} .step.active{display:block;}
+.fi{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.fi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);transform:scaleY(0);transition:transform .2s;}
+.fi.free:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(201,168,76,.14);transform:translateY(-1px);}
+.fi.free:hover::before{transform:scaleY(1);}
+.fi.taken{background:#FAF6F2;border-color:var(--border);cursor:default;opacity:.72;}
+.fi.taken::before{background:var(--err);transform:scaleY(1);}
+.fi.confirmed{background:#F0F7F3;border-color:#C3DCCB;cursor:default;opacity:.78;}
+.fi.confirmed::before{background:var(--ok);transform:scaleY(1);}
+.fn{font-family:'Cormorant Garamond',serif;font-size:1.12rem;}
+.fsub{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-light);margin-top:2px;}
+.fs{font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 11px;border-radius:100px;font-weight:500;white-space:nowrap;flex-shrink:0;}
+.fs.free{background:rgba(201,168,76,.12);color:var(--gold);}
+.fs.taken{background:rgba(154,90,90,.11);color:var(--err);}
+.fs.confirmed{background:rgba(74,124,89,.12);color:var(--ok);}
+.td{color:#C9784C;} .ts{color:#5C7A4A;}
 
-  /* PIX */
-  .pix-box{background:var(--surface-warm);border:1px solid var(--champagne);border-radius:12px;padding:24px;text-align:center;margin:20px 0;}
-  .pix-key{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--brown);word-break:break-all;margin:12px 0 4px;}
-  .pix-name{font-size:13px;color:var(--text-light);margin-bottom:16px;}
-  .pix-amount{font-family:'Cormorant Garamond',serif;font-size:2.2rem;color:var(--gold);font-weight:600;}
-  #qrcode-container{margin:16px auto;display:flex;justify-content:center;}
-  #qrcode-container canvas,#qrcode-container img{border-radius:8px;border:3px solid var(--champagne);}
-  .copy-btn{background:none;border:1px solid var(--gold);color:var(--gold);padding:8px 20px;border-radius:100px;cursor:pointer;font-size:12px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;margin-top:8px;}
-  .copy-btn:hover{background:var(--gold);color:white;}
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:1000;background:rgba(26,22,18,.55);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:14px;opacity:0;pointer-events:none;transition:opacity .24s;}
+.mo.on{opacity:1;pointer-events:all;}
+.mdl{background:var(--surface);border-radius:16px;padding:30px;max-width:430px;width:100%;box-shadow:var(--shl);transform:translateY(14px) scale(.97);transition:transform .24s;max-height:90vh;overflow-y:auto;}
+.mo.on .mdl{transform:none;}
+.mdl h2{font-size:1.7rem;font-style:italic;color:var(--brown);margin-bottom:3px;}
+.msub{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:22px;}
+.step{display:none;} .step.on{display:block;}
 
-  /* FORMS */
-  .form-group{margin-bottom:16px;}
-  .form-group label{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;}
-  .form-group input,.form-group select,.form-group textarea{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--text);background:var(--surface);transition:border-color .2s;outline:none;}
-  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);}
-  .form-group textarea{resize:vertical;min-height:80px;}
+/* PIX */
+.pbox{background:var(--warm);border:1px solid var(--champagne);border-radius:12px;padding:22px;text-align:center;margin:18px 0;}
+.pamt{font-family:'Cormorant Garamond',serif;font-size:2.1rem;color:var(--gold);font-weight:600;margin-bottom:4px;}
+.pkey{font-family:'Cormorant Garamond',serif;font-size:1.05rem;color:var(--brown);word-break:break-all;margin:10px 0 3px;}
+.pown{font-size:12px;color:var(--text-light);margin-bottom:14px;}
+#qrw{margin:14px auto;display:flex;justify-content:center;}
+#qrw canvas,#qrw img{border-radius:8px;border:3px solid var(--champagne);}
+.cpbtn{background:none;border:1px solid var(--gold);color:var(--gold);padding:7px 18px;border-radius:100px;cursor:pointer;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;margin-top:6px;}
+.cpbtn:hover{background:var(--gold);color:#fff;}
 
-  /* BUTTONS */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;transition:all .22s;text-decoration:none;}
-  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
-  .btn-primary{background:var(--dark);color:var(--champagne);}
-  .btn-primary:hover:not(:disabled){background:var(--brown);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,22,18,0.2);}
-  .btn-gold{background:var(--gold);color:white;}
-  .btn-gold:hover:not(:disabled){background:var(--gold-light);transform:translateY(-1px);}
-  .btn-outline{background:none;border:1.5px solid var(--border);color:var(--text-light);}
-  .btn-outline:hover{border-color:var(--text-light);color:var(--text);}
-  .btn-success{background:var(--success);color:white;}
-  .btn-danger{background:var(--error);color:white;font-size:12px;padding:8px 16px;}
-  .btn-sm{padding:8px 16px;font-size:11px;}
-  .btn-full{width:100%;}
-  .btn-row{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
+/* FORM */
+.fg2{margin-bottom:14px;}
+.fg2 label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:5px;}
+.fg2 input,.fg2 select,.fg2 textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--surface);transition:border-color .2s;outline:none;}
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--gold);}
+.fg2 textarea{resize:vertical;min-height:72px;}
 
-  /* SUCCESS */
-  .success-icon{width:64px;height:64px;background:rgba(74,124,89,0.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
-  .text-center{text-align:center;}
-  .whatsapp-btn{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:white;padding:14px 28px;border-radius:100px;font-size:14px;font-weight:500;text-decoration:none;transition:all .2s;margin-top:16px;}
-  .whatsapp-btn:hover{background:#20b858;transform:translateY(-1px);}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 26px;border-radius:100px;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;cursor:pointer;border:none;transition:all .2s;text-decoration:none;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none!important;}
+.btn-dk{background:var(--dark);color:var(--champagne);}
+.btn-dk:not(:disabled):hover{background:var(--brown);transform:translateY(-1px);box-shadow:0 5px 18px rgba(26,22,18,.2);}
+.btn-gd{background:var(--gold);color:#fff;}
+.btn-gd:not(:disabled):hover{background:var(--gold-light);transform:translateY(-1px);}
+.btn-ol{background:none;border:1.5px solid var(--border);color:var(--text-light);}
+.btn-ol:not(:disabled):hover{border-color:var(--text-light);color:var(--text);}
+.btn-ok{background:var(--ok);color:#fff;}
+.btn-er{background:var(--err);color:#fff;}
+.btn-sm{padding:7px 13px;font-size:10px;}
+.btn-fw{width:100%;}
+.br{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap;}
 
-  /* ADMIN */
-  .admin-lock{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px 32px;text-align:center;max-width:360px;margin:40px auto;box-shadow:var(--shadow);}
-  .admin-lock .lock-icon{font-size:40px;margin-bottom:16px;}
-  .admin-lock h2{font-size:1.6rem;font-style:italic;color:var(--brown);margin-bottom:20px;}
-  .admin-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-  .admin-tab{padding:8px 18px;border-radius:100px;background:none;border:1.5px solid var(--border);font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--text-light);transition:all .2s;}
-  .admin-tab.active{background:var(--dark);color:var(--champagne);border-color:var(--dark);}
-  .admin-section{display:none;} .admin-section.active{display:block;}
-  .admin-food-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap;}
-  .admin-food-row:last-child{border-bottom:none;}
-  .admin-food-row .af-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;}
-  .admin-food-row .af-type{font-size:11px;color:var(--text-light);}
+/* SUCCESS */
+.sico{width:60px;height:60px;background:rgba(74,124,89,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;}
+.tc{text-align:center;}
+.wabtn{display:inline-flex;align-items:center;gap:9px;background:#25D366;color:#fff;padding:13px 26px;border-radius:100px;font-size:13px;font-weight:500;text-decoration:none;transition:all .2s;margin-top:14px;}
+.wabtn:hover{background:#1ebe58;transform:translateY(-1px);}
 
-  /* PAYMENTS */
-  .payment-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-  .pc-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;}
-  .pc-detail{font-size:12px;color:var(--text-light);}
-  .pc-status{font-size:11px;padding:4px 12px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;}
-  .pc-status.pending{background:rgba(201,168,76,0.15);color:#9A7A2A;}
-  .pc-status.confirmed{background:rgba(74,124,89,0.12);color:var(--success);}
+/* NOTICE */
+.notice{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;}
+.ni{background:rgba(201,168,76,.10);border:1px solid rgba(201,168,76,.25);color:var(--brown-mid);}
 
-  /* NOTICES */
-  .notice{padding:14px 18px;border-radius:8px;font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;}
-  .notice-info{background:rgba(201,168,76,0.10);border:1px solid rgba(201,168,76,0.25);color:var(--brown-mid);}
+/* ADMIN */
+.alck{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:38px 30px;text-align:center;max-width:340px;margin:36px auto;box-shadow:var(--sh);}
+.alck .ico{font-size:38px;margin-bottom:14px;}
+.alck h2{font-size:1.55rem;font-style:italic;color:var(--brown);margin-bottom:18px;}
+.atabs{display:flex;gap:7px;margin-bottom:22px;flex-wrap:wrap;}
+.atb{padding:7px 16px;border-radius:100px;background:none;border:1.5px solid var(--border);font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;color:var(--text-light);transition:all .2s;font-family:'DM Sans',sans-serif;}
+.atb.on{background:var(--dark);color:var(--champagne);border-color:var(--dark);}
+.asec{display:none;} .asec.on{display:block;}
 
-  /* UTILS */
-  .loading{text-align:center;padding:48px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.2rem;}
-  .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
-  .spinner-sm{width:16px;height:16px;border-width:2px;margin:0;}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .empty-state{text-align:center;padding:48px 24px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.15rem;}
-  .config-banner{background:#FFF3CD;border:1px solid #FFC107;border-radius:8px;padding:12px 16px;font-size:13px;color:#856404;margin-bottom:20px;display:none;}
-  .config-banner.show{display:block;}
+/* PAYMENTS */
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.pn{font-family:'Cormorant Garamond',serif;font-size:1.05rem;}
+.pd{font-size:12px;color:var(--text-light);}
+.ps{font-size:10px;padding:4px 11px;border-radius:100px;text-transform:uppercase;letter-spacing:1px;font-weight:500;}
+.ps.pending{background:rgba(201,168,76,.15);color:#9A7A2A;}
+.ps.confirmed{background:rgba(74,124,89,.12);color:var(--ok);}
 
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:var(--champagne);padding:12px 24px;border-radius:100px;font-size:13px;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;max-width:90vw;}
-  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  #toast.error{background:var(--error);}
+/* ADMIN FOOD ROW */
+.afr{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);gap:9px;flex-wrap:wrap;}
+.afr:last-child{border-bottom:none;}
+.afn{font-family:'Cormorant Garamond',serif;font-size:1.05rem;}
+.aft{font-size:10px;color:var(--text-light);}
 
-  @media(max-width:480px){
-    .container{padding:20px 12px 60px;}
-    .modal{padding:24px 20px;}
-    .event-info-bar{flex-direction:column;align-items:flex-start;}
-    .tab-btn{padding:12px 16px;font-size:11px;}
-  }
+/* SPINNER */
+.sp{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px;}
+.sp-sm{width:14px;height:14px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld{text-align:center;padding:44px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.15rem;}
+.es{text-align:center;padding:44px 22px;color:var(--text-light);font-style:italic;font-family:'Cormorant Garamond',serif;font-size:1.1rem;}
+
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--dark);color:var(--champagne);padding:11px 22px;border-radius:100px;font-size:13px;z-index:9999;opacity:0;transition:all .28s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.err{background:var(--err);}
+#toast.suc{background:var(--ok);}
+
+/* CONFIG BANNER */
+.cfgb{background:#FFF8E1;border:1px solid #FFC107;border-radius:8px;padding:12px 16px;font-size:13px;color:#7A5700;margin:16px;display:none;}
+.cfgb.on{display:block;}
+
+@media(max-width:480px){
+  .wrap{padding:18px 10px 60px;}
+  .mdl{padding:22px 16px;}
+  .eib{flex-direction:column;align-items:flex-start;}
+  .tb{padding:12px 12px;font-size:11px;}
+}
 </style>
 </head>
 <body>
 
-<div class="config-banner" id="configBanner">
-  ⚙️ <strong>Configure o Google Sheets:</strong> Substitua <code>SEU_ID_AQUI</code> pela URL do seu Apps Script publicado (veja o LEIA-ME.md).
+<div class="cfgb" id="cfgBanner">
+  ⚙️ <strong>Modo demonstração.</strong> Configure a variável <code>SHEET_URL</code> no início do script com a URL do seu Google Apps Script publicado.
 </div>
 
-<header class="app-header">
-  <div class="ornament">✦ Uma noite especial ✦</div>
-  <h1 id="headerTitle">Jantar dos Casais</h1>
-  <p class="subtitle" id="headerDate">Carregando...</p>
-  <div class="divider-gold">◆</div>
-  <div class="event-badge"><span>🥂</span><span id="headerSpots">—</span></div>
+<header class="hd">
+  <div class="orn">✦ Uma noite especial ✦</div>
+  <h1 id="hTitle">Jantar dos Casais</h1>
+  <p class="sub" id="hDate">carregando...</p>
+  <div class="dg">◆</div>
+  <div class="badge">🥂 <span id="hSpots">—</span></div>
 </header>
 
-<div class="sync-bar">
-  <span class="sync-dot" id="syncDot"></span>
-  <span id="syncStatus">Conectando...</span>
+<div class="sync">
+  <span class="dot" id="dot"></span>
+  <span id="syncMsg">Conectando...</span>
 </div>
 
-<nav class="tab-nav">
-  <button class="tab-btn active" onclick="switchTab('home')">Início</button>
-  <button class="tab-btn" onclick="switchTab('lista')">Lista</button>
-  <button class="tab-btn" onclick="switchTab('admin')">Admin</button>
+<nav class="tabs">
+  <button class="tb on" onclick="goTab('home',this)">Início</button>
+  <button class="tb"    onclick="goTab('lista',this)">Lista</button>
+  <button class="tb"    onclick="goTab('admin',this)">Admin</button>
 </nav>
 
-<div class="container">
-  <div class="page active" id="page-home">
-    <div id="homeContent"><div class="loading"><div class="spinner"></div>Carregando evento...</div></div>
+<div class="wrap">
+
+  <!-- HOME -->
+  <div class="pg on" id="pg-home">
+    <div id="homeContent"><div class="ld"><div class="sp"></div>Carregando evento...</div></div>
   </div>
 
-  <div class="page" id="page-lista">
-    <div class="section-label">Itens disponíveis</div>
-    <div class="food-grid" id="foodGrid"><div class="loading"><div class="spinner"></div>Carregando lista...</div></div>
+  <!-- LISTA -->
+  <div class="pg" id="pg-lista">
+    <div class="sl">Itens disponíveis para reserva</div>
+    <div class="fg" id="foodGrid">
+      <div class="ld"><div class="sp"></div>Carregando lista...</div>
+    </div>
   </div>
 
-  <div class="page" id="page-admin">
-    <div class="admin-lock" id="adminLock">
-      <div class="lock-icon">🔐</div>
+  <!-- ADMIN -->
+  <div class="pg" id="pg-admin">
+
+    <div class="alck" id="adminLock">
+      <div class="ico">🔐</div>
       <h2>Área Restrita</h2>
-      <div class="form-group">
-        <label>Senha de administrador</label>
-        <input type="password" id="adminPasswordInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkAdminPass()">
+      <div class="fg2">
+        <label>Senha</label>
+        <input type="password" id="adminPass" placeholder="••••••••"
+               onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <button class="btn btn-primary btn-full" onclick="checkAdminPass()">Entrar</button>
+      <button class="btn btn-dk btn-fw" onclick="doLogin()">Entrar</button>
     </div>
 
     <div id="adminPanel" style="display:none">
-      <div class="admin-tabs">
-        <button class="admin-tab active" onclick="switchAdminTab('Evento',this)">Evento</button>
-        <button class="admin-tab" onclick="switchAdminTab('Pix',this)">PIX</button>
-        <button class="admin-tab" onclick="switchAdminTab('Lista',this)">Lista</button>
-        <button class="admin-tab" onclick="switchAdminTab('Pagamentos',this)">Pagamentos</button>
+      <div class="atabs">
+        <button class="atb on"  onclick="goAdminTab('Evento',this)">Evento</button>
+        <button class="atb"     onclick="goAdminTab('Pix',this)">PIX</button>
+        <button class="atb"     onclick="goAdminTab('Lista',this)">Lista</button>
+        <button class="atb"     onclick="goAdminTab('Pag',this)">Pagamentos</button>
       </div>
 
-      <div class="admin-section active" id="asEvento">
+      <!-- EVENTO -->
+      <div class="asec on" id="asEvento">
         <div class="card">
-          <div class="card-title">Configurar Evento</div>
-          <div class="card-meta">Dados gerais do jantar</div>
-          <div class="form-group"><label>Título do evento</label><input type="text" id="cfgTitle" placeholder="Jantar dos Casais 2025"></div>
-          <div class="form-group"><label>Data</label><input type="date" id="cfgDate"></div>
-          <div class="form-group"><label>Horário</label><input type="time" id="cfgTime"></div>
-          <div class="form-group"><label>Local</label><input type="text" id="cfgLocal" placeholder="Rua das Flores, 123"></div>
-          <div class="form-group"><label>Valor por casal (R$)</label><input type="number" id="cfgValor" placeholder="100"></div>
-          <div class="form-group"><label>Descrição (opcional)</label><textarea id="cfgDesc"></textarea></div>
-          <div class="form-group"><label>WhatsApp do admin (somente números — ex: 5521999999999)</label><input type="text" id="cfgWhatsapp" placeholder="5521999999999"></div>
-          <div class="form-group"><label>Nova senha do admin (deixe em branco para manter)</label><input type="password" id="cfgSenha"></div>
-          <button class="btn btn-primary" id="btnSaveConfig" onclick="saveConfig()">Salvar configurações</button>
+          <div class="ct">Configurar Evento</div>
+          <div class="cm">Dados gerais do jantar</div>
+          <div class="fg2"><label>Título</label><input id="cTitle" placeholder="Jantar dos Casais 2025"></div>
+          <div class="fg2"><label>Data</label><input type="date" id="cDate"></div>
+          <div class="fg2"><label>Horário</label><input type="time" id="cTime"></div>
+          <div class="fg2"><label>Local</label><input id="cLocal" placeholder="Rua das Flores, 123"></div>
+          <div class="fg2"><label>Valor por casal (R$)</label><input type="number" id="cValor" placeholder="100"></div>
+          <div class="fg2"><label>Descrição</label><textarea id="cDesc" placeholder="Uma noite especial..."></textarea></div>
+          <div class="fg2"><label>WhatsApp do admin (somente números com 55 e DDD)</label><input id="cWa" placeholder="5521999999999"></div>
+          <div class="fg2"><label>Nova senha do admin (deixe em branco para manter)</label><input type="password" id="cSenha"></div>
+          <button class="btn btn-dk" id="btnSaveEvt" onclick="saveConfig()">Salvar configurações</button>
         </div>
       </div>
 
-      <div class="admin-section" id="asPix">
+      <!-- PIX -->
+      <div class="asec" id="asPix">
         <div class="card">
-          <div class="card-title">Configurações PIX</div>
-          <div class="card-meta">Dados para recebimento</div>
-          <div class="form-group"><label>Chave PIX</label><input type="text" id="cfgPixKey" placeholder="email, CPF, telefone ou chave aleatória"></div>
-          <div class="form-group"><label>Nome do recebedor</label><input type="text" id="cfgPixName" placeholder="João Silva"></div>
-          <div class="form-group"><label>Banco (opcional)</label><input type="text" id="cfgPixBank" placeholder="Nubank, Bradesco..."></div>
-          <div class="notice notice-info">ℹ️ O QR Code é gerado automaticamente a partir da chave PIX.</div>
-          <button class="btn btn-primary" id="btnSavePix" onclick="savePixConfig()">Salvar PIX</button>
+          <div class="ct">Configurações PIX</div>
+          <div class="cm">Dados para recebimento</div>
+          <div class="fg2"><label>Chave PIX</label><input id="cPKey" placeholder="email, CPF ou telefone"></div>
+          <div class="fg2"><label>Nome do recebedor</label><input id="cPName" placeholder="João Silva"></div>
+          <div class="fg2"><label>Banco (opcional)</label><input id="cPBank" placeholder="Nubank, Bradesco..."></div>
+          <button class="btn btn-dk" id="btnSavePix" onclick="savePix()">Salvar PIX</button>
         </div>
       </div>
 
-      <div class="admin-section" id="asLista">
+      <!-- LISTA -->
+      <div class="asec" id="asLista">
         <div class="card">
-          <div class="card-title">Adicionar Item</div>
-          <div class="card-meta">Monte a lista de contribuições</div>
-          <div class="form-group"><label>Nome do item</label><input type="text" id="newFoodName" placeholder="Lasanha de frango" onkeydown="if(event.key==='Enter') addFoodItem()"></div>
-          <div class="form-group">
-            <label>Tipo</label>
-            <select id="newFoodType">
+          <div class="ct">Adicionar Item</div>
+          <div class="cm">Monte a lista de contribuições</div>
+          <div class="fg2"><label>Nome do item</label>
+            <input id="nFoodName" placeholder="Lasanha de frango"
+                   onkeydown="if(event.key==='Enter')addFood()">
+          </div>
+          <div class="fg2"><label>Tipo</label>
+            <select id="nFoodType">
               <option value="Salgado">🧆 Salgado</option>
               <option value="Doce">🍮 Doce</option>
               <option value="Bebida">🥤 Bebida</option>
               <option value="Outro">✨ Outro</option>
             </select>
           </div>
-          <button class="btn btn-primary" id="btnAddFood" onclick="addFoodItem()">Adicionar à lista</button>
+          <button class="btn btn-dk" id="btnAddFood" onclick="addFood()">Adicionar à lista</button>
         </div>
         <div class="card" style="padding:0;overflow:hidden;">
-          <div style="padding:20px 20px 0;margin-bottom:12px;"><div class="card-title">Itens cadastrados</div></div>
-          <div id="adminFoodList"><div class="loading" style="padding:24px;"><div class="spinner"></div></div></div>
+          <div style="padding:18px 18px 0 18px;margin-bottom:10px;">
+            <div class="ct" style="padding:0">Itens cadastrados</div>
+          </div>
+          <div id="adminFoodList">
+            <div class="ld" style="padding:20px;"><div class="sp"></div></div>
+          </div>
         </div>
       </div>
 
-      <div class="admin-section" id="asPagamentos">
-        <div class="section-label">Aguardando confirmação</div>
-        <div id="paymentsPending"><div class="loading"><div class="spinner"></div></div></div>
-        <div class="section-label" style="margin-top:24px;">Confirmados</div>
-        <div id="paymentsConfirmed"><div class="loading"><div class="spinner"></div></div></div>
+      <!-- PAGAMENTOS -->
+      <div class="asec" id="asPag">
+        <div class="sl">Aguardando confirmação</div>
+        <div id="payPend"><div class="ld"><div class="sp"></div></div></div>
+        <div class="sl" style="margin-top:22px;">Confirmados</div>
+        <div id="payConf"><div class="ld"><div class="sp"></div></div></div>
       </div>
     </div>
+
   </div>
-</div>
+</div><!-- /wrap -->
 
 <!-- MODAL -->
-<div class="modal-overlay" id="reserveModal">
-  <div class="modal">
-    <div class="step active" id="step1">
+<div class="mo" id="modal">
+  <div class="mdl">
+
+    <!-- STEP 1 -->
+    <div class="step on" id="st1">
       <h2>Reservar item</h2>
-      <p class="modal-sub">Preencha seus dados</p>
-      <div style="background:var(--surface-warm);border:1px solid var(--champagne);border-radius:8px;padding:12px 16px;margin-bottom:20px;">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;" id="selectedItemName">—</div>
-        <div style="font-size:12px;color:var(--text-light);" id="selectedItemType">—</div>
+      <p class="msub">Preencha seus dados para reservar</p>
+      <div style="background:var(--warm);border:1px solid var(--champagne);border-radius:8px;padding:12px 15px;margin-bottom:18px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;" id="selName">—</div>
+        <div style="font-size:11px;color:var(--text-light);" id="selType">—</div>
       </div>
-      <div class="form-group"><label>Seu nome completo</label><input type="text" id="guestName" placeholder="Maria da Silva"></div>
-      <div class="form-group"><label>Seu WhatsApp (somente números — ex: 5521999999999)</label><input type="tel" id="guestPhone" placeholder="5521999999999"></div>
-      <div class="btn-row">
-        <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
-        <button class="btn btn-primary" id="btnStep2" onclick="goStep2()">Continuar →</button>
+      <div class="fg2"><label>Seu nome completo</label>
+        <input id="gName" placeholder="Maria da Silva"
+               onkeydown="if(event.key==='Enter')goSt2()">
+      </div>
+      <div class="fg2"><label>Seu WhatsApp (somente números, com 55 e DDD)</label>
+        <input type="tel" id="gPhone" placeholder="5521999999999"
+               onkeydown="if(event.key==='Enter')goSt2()">
+      </div>
+      <div class="br">
+        <button class="btn btn-ol" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-dk" id="btnSt2" onclick="goSt2()">Continuar →</button>
       </div>
     </div>
 
-    <div class="step" id="step2">
+    <!-- STEP 2 -->
+    <div class="step" id="st2">
       <h2>Pagamento</h2>
-      <p class="modal-sub">Realize o pagamento via PIX</p>
-      <div class="pix-box">
-        <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);">Valor a pagar</div>
-        <div class="pix-amount" id="pixAmount">R$ —</div>
-        <div id="qrcode-container"></div>
-        <div style="font-size:12px;color:var(--text-light);margin-bottom:4px;">Chave PIX</div>
-        <div class="pix-key" id="pixKeyDisplay">—</div>
-        <div class="pix-name" id="pixNameDisplay">—</div>
-        <button class="copy-btn" onclick="copyPixKey()">📋 Copiar chave</button>
+      <p class="msub">Realize o pagamento via PIX</p>
+      <div class="pbox">
+        <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);">Valor a pagar</div>
+        <div class="pamt" id="pixAmt">R$ —</div>
+        <div id="qrw"></div>
+        <div style="font-size:11px;color:var(--text-light);margin-bottom:3px;">Chave PIX</div>
+        <div class="pkey" id="pixKey">—</div>
+        <div class="pown" id="pixOwn">—</div>
+        <button class="cpbtn" onclick="copyPix()">📋 Copiar chave</button>
       </div>
-      <div class="notice notice-info">ℹ️ Após pagar, clique em <strong>Já paguei</strong> para registrar a reserva.</div>
-      <div class="btn-row">
-        <button class="btn btn-outline" onclick="goStep1()">← Voltar</button>
-        <button class="btn btn-gold" id="btnStep3" onclick="goStep3()">Já paguei ✓</button>
+      <div class="notice ni">ℹ️ Após pagar, clique em <strong>Já paguei</strong> para registrar sua reserva.</div>
+      <div class="br">
+        <button class="btn btn-ol" onclick="showSt('st1')">← Voltar</button>
+        <button class="btn btn-gd" id="btnSt3" onclick="goSt3()">Já paguei ✓</button>
       </div>
     </div>
 
-    <div class="step" id="step3">
-      <div class="text-center">
-        <div class="success-icon">🎉</div>
-        <h2>Reserva feita!</h2>
-        <p class="modal-sub">Quase lá...</p>
-        <p style="color:var(--text-light);font-size:14px;margin-bottom:8px;">Envie o comprovante do PIX para o administrador confirmar sua vaga.</p>
-        <a id="whatsappLink" href="#" target="_blank" class="whatsapp-btn">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    <!-- STEP 3 -->
+    <div class="step" id="st3">
+      <div class="tc">
+        <div class="sico">🎉</div>
+        <h2>Reserva registrada!</h2>
+        <p class="msub">Quase lá...</p>
+        <p style="color:var(--text-light);font-size:14px;margin-bottom:6px;">
+          Envie o comprovante do PIX para o administrador confirmar sua participação.
+        </p>
+        <a id="waLink" href="#" target="_blank" class="wabtn">
+          <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Enviar comprovante
         </a>
-        <div style="margin-top:20px;"><button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button></div>
+        <div style="margin-top:18px;">
+          <button class="btn btn-ol btn-sm" onclick="closeModal()">Fechar</button>
+        </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <div id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════
-//  ⚙️  CONFIGURE AQUI — cole a URL do seu Apps Script
-// ═══════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzrAXV8m4jDmw1Wdc8oa_rqdEtM54FIbZRpqYah1kAs4zS1Yf2Lis8e8cMPKqRBKN5x/exec';
+// ═══════════════════════════════════════════════════════════════════
+//  ⚙️  CONFIGURE AQUI — cole a URL do Apps Script publicado
+// ═══════════════════════════════════════════════════════════════════
+const SHEET_URL = 'https://script.google.com/macros/s/SEU_ID_AQUI/exec';
 
-// Intervalo de polling (ms) — atualização automática da lista
-const POLL_MS = 10000;
+// Intervalo de polling em ms (8 segundos)
+const POLL_MS = 8000;
 
-// ═══════════════════════════════════════════════════════
-//  ESTADO
-// ═══════════════════════════════════════════════════════
-let S = {
+// ── Estado global ────────────────────────────────────────────────────
+const S = {
   event:null, pix:null, foods:[], reservations:[],
-  selectedFood:null, guestData:null,
-  adminLogged:false, isMock:false, pollTimer:null,
+  selFood:null, guest:null,
+  adminLogged:false, mock:false, timer:null,
 };
 
-// ═══════════════════════════════════════════════════════
-//  API — GET para leitura, GET com payload JSON para escrita
-//  O Google Apps Script publicado como "Qualquer pessoa"
-//  aceita fetch GET normalmente (sem CORS issues).
-//  Para escrita usamos GET com parâmetro "payload" (JSON) —
-//  mais confiável que POST com Apps Script público.
-// ═══════════════════════════════════════════════════════
-async function apiRead(action, params={}) {
-  const qs = new URLSearchParams({action, ...params}).toString();
-  const r = await fetch(`${SHEET_URL}?${qs}`, {cache:'no-store'});
+// ═══════════════════════════════════════════════════════════════════
+//  API  —  TUDO via HTTP GET com ?action=X&payload=JSON
+//  Por que GET e não POST?
+//  O Google Apps Script publicado como "Qualquer pessoa" redireciona
+//  POSTs para uma URL intermediária, causando CORS error no browser.
+//  Com GET + parâmetros não há redirecionamento e funciona sem problemas.
+// ═══════════════════════════════════════════════════════════════════
+async function api(action, data) {
+  const payload = data ? encodeURIComponent(JSON.stringify(data)) : '%7B%7D';
+  const url = `${SHEET_URL}?action=${action}&payload=${payload}`;
+  const r = await fetch(url, { cache: 'no-store' });
   if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
+  const json = await r.json();
+  return json;
 }
 
-async function apiWrite(action, data={}) {
-  // Usamos GET com parâmetro "payload" para contornar limitações de CORS com POST
-  const qs = new URLSearchParams({action, payload: JSON.stringify(data)}).toString();
-  const r = await fetch(`${SHEET_URL}?${qs}`, {cache:'no-store'});
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 //  INIT
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 async function init() {
   if (SHEET_URL.includes('SEU_ID_AQUI')) {
-    document.getElementById('configBanner').classList.add('show');
-    setSyncStatus('Modo demonstração — configure o SHEET_URL', false);
-    S.isMock = true;
-    loadMockData();
+    document.getElementById('cfgBanner').classList.add('on');
+    setSync('Modo demonstração — configure SHEET_URL', false);
+    S.mock = true;
+    loadMock();
     return;
   }
   await loadAll();
-  startPolling();
+  startPoll();
 }
 
-function startPolling() {
-  clearInterval(S.pollTimer);
-  // Polling leve: só foods + reservations (não recarrega config)
-  S.pollTimer = setInterval(pollLive, POLL_MS);
-}
-
-async function pollLive() {
-  try {
-    const [fR, rR] = await Promise.all([apiRead('getFoods'), apiRead('getReservations')]);
-    if (fR.ok) S.foods = fR.foods;
-    if (rR.ok) S.reservations = rR.reservations;
-    const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    setSyncStatus(`Sincronizado às ${now}`, false);
-    renderFoodGrid();
-    renderHeader();
-    if (S.adminLogged) { renderAdminFoodList(); renderPayments(); }
-  } catch(e) {
-    setSyncStatus('Erro de conexão — tentando...', false);
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-//  LOAD ALL (inicial)
-// ═══════════════════════════════════════════════════════
 async function loadAll() {
-  setSyncStatus('Sincronizando...', true);
+  setSync('Conectando...', true);
   try {
     const [cR, fR, rR] = await Promise.all([
-      apiRead('getConfig'), apiRead('getFoods'), apiRead('getReservations'),
+      api('getConfig'), api('getFoods'), api('getReservations'),
     ]);
     if (cR.ok) { S.event = cR.event; S.pix = cR.pix; }
     if (fR.ok) S.foods = fR.foods;
     if (rR.ok) S.reservations = rR.reservations;
-    const now = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    setSyncStatus(`Sincronizado às ${now}`, false);
+    syncOk();
     renderAll();
   } catch(e) {
-    setSyncStatus('Erro de conexão', false);
+    setSync('Erro de conexão — verifique o SHEET_URL', false);
     console.error(e);
   }
 }
 
-function setSyncStatus(msg, loading) {
-  document.getElementById('syncStatus').textContent = msg;
-  document.getElementById('syncDot').style.animationDuration = loading ? '.5s' : '2s';
+// ── Polling: a cada POLL_MS baixa foods + reservas ──────────────────
+function startPoll() {
+  clearInterval(S.timer);
+  S.timer = setInterval(poll, POLL_MS);
 }
 
-// ═══════════════════════════════════════════════════════
+async function poll() {
+  if (S.mock) return;
+  try {
+    const [fR, rR] = await Promise.all([
+      api('getFoods'), api('getReservations'),
+    ]);
+    if (fR.ok) {
+      const prev = JSON.stringify(S.foods);
+      S.foods = fR.foods;
+      if (JSON.stringify(S.foods) !== prev) { renderGrid(); renderHeader(); }
+    }
+    if (rR.ok) {
+      S.reservations = rR.reservations;
+      if (S.adminLogged) { renderAdminFoodList(); renderPayments(); }
+    }
+    syncOk();
+  } catch(e) { setSync('Aguardando conexão...', false); }
+}
+
+function syncOk() {
+  const t = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  setSync(`Atualizado às ${t}`, false);
+}
+function setSync(msg, loading) {
+  document.getElementById('syncMsg').textContent = msg;
+  document.getElementById('dot').classList.toggle('spin', loading);
+}
+
+// ═══════════════════════════════════════════════════════════════════
 //  MOCK
-// ═══════════════════════════════════════════════════════
-function loadMockData() {
-  S.event = {title:'Jantar dos Casais',date:'2025-12-20',time:'20:00',local:'Salão de Festas — Edifício Aurora',valor:100,desc:'Uma noite especial entre amigos e casais, com boa comida e muita alegria.',whatsapp:'5521999999999',senha:'admin123'};
+// ═══════════════════════════════════════════════════════════════════
+function loadMock() {
+  S.event = {title:'Jantar dos Casais',date:'2025-12-20',time:'20:00',
+    local:'Salão de Festas — Edifício Aurora',valor:'100',
+    desc:'Uma noite especial entre amigos e casais, com boa comida e muita alegria.',
+    whatsapp:'5521999999999',senha:'admin123'};
   S.pix = {key:'11999999999',name:'João Organizador',bank:'Nubank'};
   S.foods = [
-    {id:'1',name:'Lasanha de Frango',type:'Salgado',status:'free'},
-    {id:'2',name:'Mousse de Maracujá',type:'Doce',status:'reserved',guestName:'Ana Silva'},
-    {id:'3',name:'Salada Caesar',type:'Salgado',status:'confirmed',guestName:'Carlos Melo'},
-    {id:'4',name:'Bolo de Chocolate',type:'Doce',status:'free'},
-    {id:'5',name:'Coxinhas (30 un)',type:'Salgado',status:'free'},
-    {id:'6',name:'Pudim de Leite',type:'Doce',status:'free'},
+    {id:'1',name:'Lasanha de Frango',  type:'Salgado',status:'free',    guestName:'',         guestPhone:''},
+    {id:'2',name:'Mousse de Maracujá', type:'Doce',   status:'reserved',guestName:'Ana Silva', guestPhone:''},
+    {id:'3',name:'Salada Caesar',      type:'Salgado',status:'confirmed',guestName:'Carlos Melo',guestPhone:''},
+    {id:'4',name:'Bolo de Chocolate',  type:'Doce',   status:'free',    guestName:'',         guestPhone:''},
+    {id:'5',name:'Coxinhas (30 un)',   type:'Salgado',status:'free',    guestName:'',         guestPhone:''},
+    {id:'6',name:'Pudim de Leite',     type:'Doce',   status:'free',    guestName:'',         guestPhone:''},
   ];
   S.reservations = [
-    {id:'R1',guestName:'Ana Silva',guestPhone:'5521988888888',foodId:'2',foodName:'Mousse de Maracujá',status:'pending',ts:new Date().toISOString()},
-    {id:'R2',guestName:'Carlos Melo',guestPhone:'5521977777777',foodId:'3',foodName:'Salada Caesar',status:'confirmed',ts:new Date().toISOString()},
+    {id:'R1',guestName:'Ana Silva', guestPhone:'5521988888888',foodId:'2',foodName:'Mousse de Maracujá',status:'pending',  ts:new Date().toISOString()},
+    {id:'R2',guestName:'Carlos Melo',guestPhone:'5521977777777',foodId:'3',foodName:'Salada Caesar',    status:'confirmed',ts:new Date().toISOString()},
   ];
   renderAll();
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 //  RENDER
-// ═══════════════════════════════════════════════════════
-function renderAll() { renderHeader(); renderHome(); renderFoodGrid(); }
+// ═══════════════════════════════════════════════════════════════════
+function renderAll() { renderHeader(); renderHome(); renderGrid(); }
 
 function renderHeader() {
   const ev = S.event; if (!ev) return;
-  document.getElementById('headerTitle').textContent = ev.title||'Jantar dos Casais';
-  const d = ev.date ? new Date(ev.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}) : '—';
-  document.getElementById('headerDate').textContent = `${d}${ev.time?' • '+ev.time:''}`;
-  const free = S.foods.filter(f=>f.status==='free').length;
-  document.getElementById('headerSpots').textContent = `${free} de ${S.foods.length} itens disponíveis`;
-  document.title = ev.title||'Jantar dos Casais';
+  document.getElementById('hTitle').textContent = ev.title || 'Jantar dos Casais';
+  document.title = ev.title || 'Jantar dos Casais';
+  const d = ev.date
+    ? new Date(ev.date + 'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})
+    : '—';
+  document.getElementById('hDate').textContent = `${d}${ev.time ? ' • ' + ev.time : ''}`;
+  const free = S.foods.filter(f => f.status === 'free').length;
+  document.getElementById('hSpots').textContent = `${free} de ${S.foods.length} itens disponíveis`;
 }
 
 function renderHome() {
-  const ev = S.event;
-  const el = document.getElementById('homeContent');
-  if (!ev) { el.innerHTML='<div class="empty-state">Nenhum evento configurado ainda.</div>'; return; }
-  const d = ev.date ? new Date(ev.date+'T00:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  const ev = S.event, el = document.getElementById('homeContent');
+  if (!ev) { el.innerHTML = '<div class="es">Nenhum evento configurado ainda.</div>'; return; }
+  const d = ev.date
+    ? new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})
+    : '—';
   el.innerHTML = `
-    <div class="event-info-bar">
-      <div class="ei-item"><div class="ei-label">Data</div><div class="ei-value">${d}</div></div>
-      <div class="ei-item"><div class="ei-label">Horário</div><div class="ei-value">${ev.time||'—'}</div></div>
-      <div class="ei-item"><div class="ei-label">Valor por casal</div><div class="ei-value price">R$ ${Number(ev.valor||0).toFixed(2)}</div></div>
+    <div class="eib">
+      <div><div class="eil">Data</div><div class="eiv">${d}</div></div>
+      <div><div class="eil">Horário</div><div class="eiv">${ev.time||'—'}</div></div>
+      <div><div class="eil">Por casal</div><div class="eiv p">R$ ${Number(ev.valor||0).toFixed(2)}</div></div>
     </div>
-    ${ev.local?`<div class="card"><div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:6px;">📍 Local</div><div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;">${ev.local}</div></div>`:''}
-    ${ev.desc?`<div class="card"><div style="color:var(--text-light);line-height:1.7;">${ev.desc}</div></div>`:''}
-    <div class="card" style="text-align:center;padding:32px;">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-style:italic;color:var(--brown);margin-bottom:8px;">Escolha seu item</div>
-      <p style="color:var(--text-light);font-size:14px;margin-bottom:20px;">Cada casal traz um prato doce ou salgado além do valor do evento</p>
-      <button class="btn btn-primary" onclick="switchTab('lista')">Ver lista de itens →</button>
+    ${ev.local?`<div class="card"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);margin-bottom:5px;">📍 Local</div><div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;">${ev.local}</div></div>`:''}
+    ${ev.desc?`<div class="card"><div style="color:var(--text-light);line-height:1.7;font-size:14px;">${ev.desc}</div></div>`:''}
+    <div class="card" style="text-align:center;padding:30px;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-style:italic;color:var(--brown);margin-bottom:7px;">Escolha seu item</div>
+      <p style="color:var(--text-light);font-size:13px;margin-bottom:18px;">Cada casal traz um prato doce ou salgado além do valor do evento</p>
+      <button class="btn btn-dk" onclick="goTab('lista',document.querySelectorAll('.tb')[1])">Ver lista de itens →</button>
     </div>`;
 }
 
-function renderFoodGrid() {
-  const grid = document.getElementById('foodGrid');
-  if (!S.foods.length) { grid.innerHTML='<div class="empty-state">Nenhum item na lista ainda.</div>'; return; }
-  const emoji = {Salgado:'🧆',Doce:'🍮',Bebida:'🥤',Outro:'✨'};
-  grid.innerHTML = S.foods.map(f => {
-    const free=f.status==='free', conf=f.status==='confirmed';
-    const cls = free?'':conf?'done':'taken';
-    const stLbl = free?'Disponível':conf?'Confirmado ✓':'Reservado';
-    const stCls = free?'free':conf?'done':'taken';
-    const tc = f.type==='Doce'?'tag-doce':f.type==='Salgado'?'tag-salgado':'';
-    return `<div class="food-item ${cls}" ${free?`onclick="openReserve('${f.id}')"`:''}
-      title="${free?'Clique para reservar':f.guestName?'Reservado por '+f.guestName:''}">
-      <div class="food-item-left">
-        <div class="food-name">${emoji[f.type]||'✨'} ${f.name}</div>
-        <div class="food-type-tag ${tc}">${f.type}${!free&&f.guestName?' • '+f.guestName:''}</div>
+const EM = {Salgado:'🧆',Doce:'🍮',Bebida:'🥤',Outro:'✨'};
+
+function renderGrid() {
+  const el = document.getElementById('foodGrid');
+  if (!S.foods.length) { el.innerHTML='<div class="es">Nenhum item na lista ainda.</div>'; return; }
+  el.innerHTML = S.foods.map(f => {
+    const free = f.status === 'free', conf = f.status === 'confirmed';
+    const cls  = free ? 'free' : conf ? 'confirmed' : 'taken';
+    const slbl = free ? 'Disponível' : conf ? 'Confirmado ✓' : 'Reservado';
+    const tc   = f.type === 'Doce' ? 'td' : f.type === 'Salgado' ? 'ts' : '';
+    return `<div class="fi ${cls}" ${free ? `onclick="openReserve('${f.id}')"` : ''}
+      title="${free ? 'Clique para reservar' : f.guestName ? 'Por ' + f.guestName : ''}">
+      <div>
+        <div class="fn">${EM[f.type]||'✨'} ${f.name}</div>
+        <div class="fsub ${tc}">${f.type}${!free && f.guestName ? ' • ' + f.guestName : ''}</div>
       </div>
-      <span class="food-status ${stCls}">${stLbl}</span>
+      <span class="fs ${cls}">${slbl}</span>
     </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════════════════
-//  RESERVA — verificação dupla no servidor
-// ═══════════════════════════════════════════════════════
-function openReserve(foodId) {
-  const food = S.foods.find(f=>f.id===foodId);
-  if (!food || food.status!=='free') { toast('Este item já foi reservado','error'); return; }
-  S.selectedFood = food;
-  document.getElementById('selectedItemName').textContent = food.name;
-  document.getElementById('selectedItemType').textContent = food.type;
-  goStep1();
-  document.getElementById('reserveModal').classList.add('open');
+// ═══════════════════════════════════════════════════════════════════
+//  FLUXO DE RESERVA
+// ═══════════════════════════════════════════════════════════════════
+function openReserve(id) {
+  const food = S.foods.find(f => f.id === id);
+  if (!food || food.status !== 'free') { toast('Este item já foi reservado', 'err'); return; }
+  S.selFood = food;
+  document.getElementById('selName').textContent = food.name;
+  document.getElementById('selType').textContent = food.type;
+  document.getElementById('gName').value  = '';
+  document.getElementById('gPhone').value = '';
+  showSt('st1');
+  document.getElementById('modal').classList.add('on');
 }
 
 function closeModal() {
-  document.getElementById('reserveModal').classList.remove('open');
-  document.getElementById('guestName').value='';
-  document.getElementById('guestPhone').value='';
-  S.selectedFood=null; S.guestData=null;
+  document.getElementById('modal').classList.remove('on');
+  S.selFood = null; S.guest = null;
 }
 
-function goStep1() {
-  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('step1').classList.add('active');
+function showSt(id) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
 }
 
-async function goStep2() {
-  const name = document.getElementById('guestName').value.trim();
-  const phone = document.getElementById('guestPhone').value.trim().replace(/\D/g,'');
-  if (!name) { toast('Informe seu nome'); return; }
-  if (phone.length < 10) { toast('Informe um WhatsApp válido (com DDD)'); return; }
-  S.guestData = { name, phone };
+async function goSt2() {
+  const name  = document.getElementById('gName').value.trim();
+  const phone = document.getElementById('gPhone').value.replace(/\D/g,'');
+  if (!name)          { toast('Informe seu nome completo');             return; }
+  if (phone.length < 11) { toast('WhatsApp inválido — use 55+DDD+número'); return; }
+  S.guest = { name, phone };
 
-  const btn = document.getElementById('btnStep2');
-  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-sm"></div> Verificando...';
+  const btn = document.getElementById('btnSt2');
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span> Verificando...';
 
-  // Checar disponibilidade em tempo real antes de mostrar o PIX
-  if (!S.isMock) {
+  // Consulta disponibilidade em tempo real antes de mostrar PIX
+  if (!S.mock) {
     try {
-      const chk = await apiRead('checkFood', { foodId: S.selectedFood.id });
-      if (!chk.ok || chk.status !== 'free') {
-        toast('⚠️ Este item acabou de ser reservado por outra pessoa!','error');
-        btn.disabled=false; btn.innerHTML='Continuar →';
-        await pollLive(); closeModal(); return;
+      const r = await api('getFoods');
+      if (r.ok) S.foods = r.foods;
+      const food = S.foods.find(f => f.id === S.selFood.id);
+      if (!food || food.status !== 'free') {
+        toast('⚠️ Item reservado por outra pessoa agora!', 'err');
+        btn.disabled = false; btn.innerHTML = 'Continuar →';
+        renderGrid(); renderHeader(); closeModal(); return;
       }
-    } catch(e) { /* continua — melhor esforço */ }
+    } catch(e) { /* segue offline */ }
   }
 
-  btn.disabled=false; btn.innerHTML='Continuar →';
-  renderPixStep();
-  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-  document.getElementById('step2').classList.add('active');
-}
+  // Monta tela PIX
+  const pix = S.pix || {};
+  const val = Number(S.event?.valor || 0);
+  document.getElementById('pixAmt').textContent = `R$ ${val.toFixed(2)}`;
+  document.getElementById('pixKey').textContent = pix.key  || '—';
+  document.getElementById('pixOwn').textContent = `${pix.name||'—'}${pix.bank?' • '+pix.bank:''}`;
 
-function renderPixStep() {
-  const pix=S.pix, val=S.event?.valor||0;
-  document.getElementById('pixAmount').textContent = `R$ ${Number(val).toFixed(2)}`;
-  document.getElementById('pixKeyDisplay').textContent = pix?.key||'—';
-  document.getElementById('pixNameDisplay').textContent = `${pix?.name||'—'}${pix?.bank?' • '+pix.bank:''}`;
-  const qr = document.getElementById('qrcode-container');
-  qr.innerHTML='';
-  if (pix?.key) try { new QRCode(qr,{text:pix.key,width:160,height:160,colorDark:'#1A1612',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
-}
-
-function copyPixKey() {
-  const key=S.pix?.key; if (!key) return;
-  navigator.clipboard.writeText(key).then(()=>toast('Chave PIX copiada!')).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);
-    ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Chave PIX copiada!');
-  });
-}
-
-async function goStep3() {
-  const food=S.selectedFood, guest=S.guestData;
-  if (!food||!guest) return;
-  const btn=document.getElementById('btnStep3');
-  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-sm"></div> Salvando...';
-
-  try {
-    if (!S.isMock) {
-      // O Apps Script faz a verificação final + escrita atomicamente
-      const r = await apiWrite('createReservation', {
-        foodId:food.id, foodName:food.name,
-        guestName:guest.name, guestPhone:guest.phone,
+  const qrDiv = document.getElementById('qrw');
+  qrDiv.innerHTML = '';
+  if (pix.key) {
+    try {
+      new QRCode(qrDiv, {
+        text: pix.key, width: 154, height: 154,
+        colorDark: '#1A1612', colorLight: '#FFFFFF',
+        correctLevel: QRCode.CorrectLevel.M,
       });
-      if (!r.ok) {
-        toast(r.error||'⚠️ Item já reservado por outra pessoa!','error');
-        btn.disabled=false; btn.innerHTML='Já paguei ✓';
-        await pollLive(); closeModal(); return;
-      }
-    }
-    // Atualizar estado local imediatamente (sem esperar próximo poll)
-    food.status='reserved'; food.guestName=guest.name;
-    if (!S.isMock) S.reservations.push({id:'local',guestName:guest.name,guestPhone:guest.phone,foodId:food.id,foodName:food.name,status:'pending',ts:new Date().toISOString()});
-    renderFoodGrid(); renderHeader();
-
-    const wa=S.event?.whatsapp||'';
-    const msg=encodeURIComponent(`Olá! Sou ${guest.name} e reservei *${food.name}* no *${S.event?.title||'Jantar dos Casais'}*. Segue comprovante do PIX de R$ ${Number(S.event?.valor||0).toFixed(2)}. 🎉`);
-    document.getElementById('whatsappLink').href=`https://wa.me/${wa}?text=${msg}`;
-    document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
-    document.getElementById('step3').classList.add('active');
-  } catch(e) {
-    toast('Erro ao salvar. Tente novamente.','error');
+    } catch(e) { console.warn('QR Code:', e); }
   }
-  btn.disabled=false; btn.innerHTML='Já paguei ✓';
+
+  btn.disabled = false; btn.innerHTML = 'Continuar →';
+  showSt('st2');
 }
 
-// ═══════════════════════════════════════════════════════
+async function goSt3() {
+  if (!S.selFood || !S.guest) return;
+  const btn = document.getElementById('btnSt3');
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span> Registrando...';
+
+  if (!S.mock) {
+    try {
+      // Operação atômica no servidor: check + lock + insert
+      const r = await api('reserveFood', {
+        foodId:     S.selFood.id,
+        foodName:   S.selFood.name,
+        guestName:  S.guest.name,
+        guestPhone: S.guest.phone,
+      });
+
+      if (!r.ok) {
+        const msg = r.conflict
+          ? `⚠️ ${r.takenBy || 'Alguém'} acabou de reservar este item!`
+          : 'Erro ao registrar: ' + (r.error || 'tente novamente');
+        toast(msg, 'err');
+        btn.disabled = false; btn.innerHTML = 'Já paguei ✓';
+        await poll(); renderGrid(); closeModal(); return;
+      }
+    } catch(e) {
+      toast('Erro de conexão — verifique sua internet', 'err');
+      btn.disabled = false; btn.innerHTML = 'Já paguei ✓';
+      return;
+    }
+  }
+
+  // Atualiza estado local imediatamente (otimistic update)
+  const food = S.foods.find(f => f.id === S.selFood.id);
+  if (food) { food.status = 'reserved'; food.guestName = S.guest.name; food.guestPhone = S.guest.phone; }
+  renderGrid(); renderHeader();
+
+  // Link WhatsApp para comprovante
+  const wa  = S.event?.whatsapp || '';
+  const val = Number(S.event?.valor || 0);
+  const msg = encodeURIComponent(
+    `Olá! Sou *${S.guest.name}* e reservei *${S.selFood.name}* ` +
+    `no *${S.event?.title || 'Jantar dos Casais'}*. ` +
+    `Segue o comprovante do PIX de *R$ ${val.toFixed(2)}* 🎉`
+  );
+  document.getElementById('waLink').href = wa
+    ? `https://wa.me/${wa}?text=${msg}`
+    : `https://wa.me/?text=${msg}`;
+
+  btn.disabled = false; btn.innerHTML = 'Já paguei ✓';
+  showSt('st3');
+}
+
+function copyPix() {
+  const key = S.pix?.key || '';
+  if (!key) return;
+  navigator.clipboard.writeText(key)
+    .then(() => toast('Chave PIX copiada! 📋'))
+    .catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = key; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      toast('Chave PIX copiada! 📋');
+    });
+}
+
+// ═══════════════════════════════════════════════════════════════════
 //  ADMIN
-// ═══════════════════════════════════════════════════════
-function checkAdminPass() {
-  const val=document.getElementById('adminPasswordInput').value;
-  const ok=S.event?.senha||'admin123';
-  if (val===ok) {
-    S.adminLogged=true;
-    document.getElementById('adminLock').style.display='none';
-    document.getElementById('adminPanel').style.display='block';
-    populateAdminForms(); renderAdminFoodList(); renderPayments();
-  } else toast('Senha incorreta','error');
+// ═══════════════════════════════════════════════════════════════════
+function doLogin() {
+  const val = document.getElementById('adminPass').value;
+  if (val === (S.event?.senha || 'admin123')) {
+    S.adminLogged = true;
+    document.getElementById('adminLock').style.display  = 'none';
+    document.getElementById('adminPanel').style.display = 'block';
+    fillAdminForm(); renderAdminFoodList(); renderPayments();
+  } else {
+    toast('Senha incorreta', 'err');
+    document.getElementById('adminPass').select();
+  }
 }
 
-function populateAdminForms() {
-  const ev=S.event||{}, pix=S.pix||{};
-  document.getElementById('cfgTitle').value=ev.title||'';
-  document.getElementById('cfgDate').value=ev.date||'';
-  document.getElementById('cfgTime').value=ev.time||'';
-  document.getElementById('cfgLocal').value=ev.local||'';
-  document.getElementById('cfgValor').value=ev.valor||'';
-  document.getElementById('cfgDesc').value=ev.desc||'';
-  document.getElementById('cfgWhatsapp').value=ev.whatsapp||'';
-  document.getElementById('cfgPixKey').value=pix.key||'';
-  document.getElementById('cfgPixName').value=pix.name||'';
-  document.getElementById('cfgPixBank').value=pix.bank||'';
+function fillAdminForm() {
+  const ev = S.event||{}, p = S.pix||{};
+  document.getElementById('cTitle').value  = ev.title    || '';
+  document.getElementById('cDate').value   = ev.date     || '';
+  document.getElementById('cTime').value   = ev.time     || '';
+  document.getElementById('cLocal').value  = ev.local    || '';
+  document.getElementById('cValor').value  = ev.valor    || '';
+  document.getElementById('cDesc').value   = ev.desc     || '';
+  document.getElementById('cWa').value     = ev.whatsapp || '';
+  document.getElementById('cPKey').value   = p.key       || '';
+  document.getElementById('cPName').value  = p.name      || '';
+  document.getElementById('cPBank').value  = p.bank      || '';
 }
 
-function switchAdminTab(name, el) {
-  document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('as'+name).classList.add('active');
-  if (name==='Pagamentos') { pollLive().then(renderPayments); }
+function goAdminTab(name, el) {
+  document.querySelectorAll('.atb').forEach(t  => t.classList.remove('on'));
+  document.querySelectorAll('.asec').forEach(s => s.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('as'+name).classList.add('on');
+  if (name === 'Pag') poll().then(() => renderPayments());
+  if (name === 'Lista') renderAdminFoodList();
 }
 
 async function saveConfig() {
-  const cfg={
-    title:document.getElementById('cfgTitle').value,
-    date:document.getElementById('cfgDate').value,
-    time:document.getElementById('cfgTime').value,
-    local:document.getElementById('cfgLocal').value,
-    valor:document.getElementById('cfgValor').value,
-    desc:document.getElementById('cfgDesc').value,
-    whatsapp:document.getElementById('cfgWhatsapp').value,
+  const cfg = {
+    title:    document.getElementById('cTitle').value,
+    date:     document.getElementById('cDate').value,
+    time:     document.getElementById('cTime').value,
+    local:    document.getElementById('cLocal').value,
+    valor:    document.getElementById('cValor').value,
+    desc:     document.getElementById('cDesc').value,
+    whatsapp: document.getElementById('cWa').value,
   };
-  const np=document.getElementById('cfgSenha').value;
-  if (np) cfg.senha=np;
-  const btn=document.getElementById('btnSaveConfig');
-  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-sm"></div> Salvando...';
+  const np = document.getElementById('cSenha').value;
+  if (np) cfg.senha = np;
+
+  const btn = document.getElementById('btnSaveEvt');
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span> Salvando...';
   try {
-    if (!S.isMock) {
-      const r=await apiWrite('saveConfig',cfg);
-      if (!r.ok) { toast('Erro: '+(r.error||'falha ao salvar'),'error'); btn.disabled=false; btn.innerHTML='Salvar configurações'; return; }
+    if (!S.mock) {
+      const r = await api('saveConfig', cfg);
+      if (!r.ok) { toast('Erro: ' + (r.error||'falha'), 'err'); return; }
     }
-    S.event={...S.event,...cfg}; renderAll(); toast('Configurações salvas! ✓');
-  } catch(e){ toast('Erro de conexão','error'); }
-  btn.disabled=false; btn.innerHTML='Salvar configurações';
+    S.event = { ...(S.event||{}), ...cfg };
+    renderAll();
+    document.getElementById('cSenha').value = '';
+    toast('Configurações salvas! ✓', 'suc');
+  } catch(e) { toast('Erro de conexão', 'err'); }
+  btn.disabled = false; btn.innerHTML = 'Salvar configurações';
 }
 
-async function savePixConfig() {
-  const pix={key:document.getElementById('cfgPixKey').value,name:document.getElementById('cfgPixName').value,bank:document.getElementById('cfgPixBank').value};
-  const btn=document.getElementById('btnSavePix');
-  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-sm"></div> Salvando...';
+async function savePix() {
+  const pix = {
+    key:  document.getElementById('cPKey').value,
+    name: document.getElementById('cPName').value,
+    bank: document.getElementById('cPBank').value,
+  };
+  const btn = document.getElementById('btnSavePix');
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span> Salvando...';
   try {
-    if (!S.isMock) {
-      const r=await apiWrite('savePixConfig',pix);
-      if (!r.ok) { toast('Erro ao salvar PIX','error'); btn.disabled=false; btn.innerHTML='Salvar PIX'; return; }
+    if (!S.mock) {
+      const r = await api('savePixConfig', pix);
+      if (!r.ok) { toast('Erro ao salvar PIX', 'err'); return; }
     }
-    S.pix=pix; toast('Dados PIX salvos! ✓');
-  } catch(e){ toast('Erro de conexão','error'); }
-  btn.disabled=false; btn.innerHTML='Salvar PIX';
+    S.pix = pix;
+    toast('PIX salvo! ✓', 'suc');
+  } catch(e) { toast('Erro de conexão', 'err'); }
+  btn.disabled = false; btn.innerHTML = 'Salvar PIX';
 }
 
-async function addFoodItem() {
-  const name=document.getElementById('newFoodName').value.trim();
-  const type=document.getElementById('newFoodType').value;
+async function addFood() {
+  const name = document.getElementById('nFoodName').value.trim();
+  const type = document.getElementById('nFoodType').value;
   if (!name) { toast('Digite o nome do item'); return; }
-  const btn=document.getElementById('btnAddFood');
-  btn.disabled=true; btn.innerHTML='<div class="spinner spinner-sm"></div> Adicionando...';
-  const id=Date.now().toString();
+
+  const btn = document.getElementById('btnAddFood');
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span> Adicionando...';
+  const id = String(Date.now());
   try {
-    if (!S.isMock) {
-      const r=await apiWrite('addFood',{id,name,type});
-      if (!r.ok) { toast('Erro ao adicionar','error'); btn.disabled=false; btn.innerHTML='Adicionar à lista'; return; }
+    if (!S.mock) {
+      const r = await api('addFood', {id, name, type});
+      if (!r.ok) { toast('Erro ao adicionar: ' + (r.error||''), 'err'); return; }
     }
-    S.foods.push({id,name,type,status:'free'});
-    document.getElementById('newFoodName').value='';
-    renderFoodGrid(); renderAdminFoodList(); renderHeader(); toast('Item adicionado! ✓');
-  } catch(e){ toast('Erro de conexão','error'); }
-  btn.disabled=false; btn.innerHTML='Adicionar à lista';
+    S.foods.push({id, name, type, status:'free', guestName:'', guestPhone:''});
+    document.getElementById('nFoodName').value = '';
+    renderGrid(); renderAdminFoodList(); renderHeader();
+    toast('Item adicionado! ✓', 'suc');
+  } catch(e) { toast('Erro de conexão', 'err'); }
+  btn.disabled = false; btn.innerHTML = 'Adicionar à lista';
 }
 
-async function removeFoodItem(id) {
-  if (!confirm('Remover este item?')) return;
+async function removeFood(id) {
+  if (!confirm('Remover este item da lista?')) return;
   try {
-    if (!S.isMock) {
-      const r=await apiWrite('removeFood',{id});
-      if (!r.ok) { toast('Erro ao remover','error'); return; }
+    if (!S.mock) {
+      const r = await api('removeFood', {id});
+      if (!r.ok) { toast(r.error || 'Não foi possível remover', 'err'); return; }
     }
-    S.foods=S.foods.filter(f=>f.id!==id);
-    renderFoodGrid(); renderAdminFoodList(); renderHeader(); toast('Item removido.');
-  } catch(e){ toast('Erro de conexão','error'); }
+    S.foods = S.foods.filter(f => f.id !== id);
+    renderGrid(); renderAdminFoodList(); renderHeader();
+    toast('Item removido.');
+  } catch(e) { toast('Erro de conexão', 'err'); }
+}
+
+async function releaseRes(resId, foodId) {
+  if (!confirm('Liberar este item (desfazer reserva)?')) return;
+  try {
+    if (!S.mock) {
+      const r = await api('releaseFood', {reservationId: resId, foodId});
+      if (!r.ok) { toast('Erro ao liberar', 'err'); return; }
+    }
+    const res = S.reservations.find(r => r.id === resId);
+    if (res) res.status = 'cancelled';
+    const food = S.foods.find(f => f.id === foodId);
+    if (food) { food.status='free'; food.guestName=''; food.guestPhone=''; }
+    renderGrid(); renderHeader(); renderAdminFoodList(); renderPayments();
+    toast('Reserva liberada.');
+  } catch(e) { toast('Erro de conexão', 'err'); }
 }
 
 function renderAdminFoodList() {
-  const el=document.getElementById('adminFoodList');
-  if (!S.foods.length) { el.innerHTML='<div class="empty-state" style="padding:24px;">Nenhum item ainda.</div>'; return; }
-  const emoji={Salgado:'🧆',Doce:'🍮',Bebida:'🥤',Outro:'✨'};
-  const stM={free:'Disponível',reserved:'Reservado',confirmed:'Confirmado'};
-  el.innerHTML=S.foods.map(f=>`
-    <div class="admin-food-row">
-      <div><div class="af-name">${emoji[f.type]||'✨'} ${f.name}</div>
-      <div class="af-type">${f.type} • ${stM[f.status]||f.status}${f.guestName?' — '+f.guestName:''}</div></div>
-      ${f.status==='free'?`<button class="btn btn-danger btn-sm" onclick="removeFoodItem('${f.id}')">Remover</button>`:'<span style="font-size:11px;color:var(--text-light);">Em uso</span>'}
+  const el = document.getElementById('adminFoodList');
+  if (!S.foods.length) { el.innerHTML='<div class="es" style="padding:22px;">Nenhum item cadastrado.</div>'; return; }
+  const stM = {free:'Disponível',reserved:'Reservado',confirmed:'Confirmado'};
+  el.innerHTML = S.foods.map(f => `
+    <div class="afr">
+      <div>
+        <div class="afn">${EM[f.type]||'✨'} ${f.name}</div>
+        <div class="aft">${f.type} • ${stM[f.status]||f.status}${f.guestName?' — '+f.guestName:''}</div>
+      </div>
+      ${f.status==='free'
+        ? `<button class="btn btn-er btn-sm" onclick="removeFood('${f.id}')">Remover</button>`
+        : '<span style="font-size:10px;color:var(--text-light);">Em uso</span>'}
     </div>`).join('');
 }
 
 function renderPayments() {
-  const pending=S.reservations.filter(r=>r.status==='pending');
-  const confirmed=S.reservations.filter(r=>r.status==='confirmed');
-  const render=(list,id)=>{
-    const el=document.getElementById(id);
-    if (!list.length) { el.innerHTML='<div class="empty-state">Nenhum registro.</div>'; return; }
-    el.innerHTML=list.map(r=>`
-      <div class="payment-card">
+  const all     = (S.reservations||[]).filter(r => r.status !== 'cancelled');
+  const pending = all.filter(r => r.status === 'pending');
+  const confed  = all.filter(r => r.status === 'confirmed');
+
+  const render = (list, elId) => {
+    const el = document.getElementById(elId);
+    if (!list.length) { el.innerHTML='<div class="es">Nenhum registro.</div>'; return; }
+    el.innerHTML = list.map(r => {
+      const ts  = r.ts ? new Date(r.ts).toLocaleString('pt-BR') : '';
+      const waC = encodeURIComponent(`Olá ${r.guestName}! ✅ Pagamento confirmado. Te esperamos no *${S.event?.title||'Jantar dos Casais'}*! 🎉🥂`);
+      return `<div class="pc">
         <div>
-          <div class="pc-name">${r.guestName}</div>
-          <div class="pc-detail">📱 ${r.guestPhone} &nbsp;•&nbsp; 🍽 ${r.foodName}</div>
-          <div class="pc-detail" style="margin-top:2px;font-size:11px;">${r.ts?new Date(r.ts).toLocaleString('pt-BR'):''}</div>
+          <div class="pn">${r.guestName}</div>
+          <div class="pd">📱 ${r.guestPhone} &nbsp;•&nbsp; 🍽 ${r.foodName}</div>
+          ${ts?`<div class="pd" style="font-size:10px;margin-top:2px;">${ts}</div>`:''}
         </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <span class="pc-status ${r.status}">${r.status==='confirmed'?'Confirmado ✓':'Aguardando'}</span>
-          ${r.status==='pending'?`<button class="btn btn-success btn-sm" onclick="confirmPayment('${r.id}','${r.guestPhone}','${r.guestName}','${r.foodId}')">Confirmar ✓</button>`:''}
-          <a href="https://wa.me/${r.guestPhone}?text=${encodeURIComponent('Olá '+r.guestName+'!')}" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;padding:8px 14px;font-size:11px;">WhatsApp</a>
+        <div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap;">
+          <span class="ps ${r.status}">${r.status==='confirmed'?'Confirmado ✓':'Aguardando'}</span>
+          ${r.status==='pending'?`
+            <button class="btn btn-ok btn-sm" onclick="confirmPay('${r.id}','${r.guestPhone}','${r.guestName}','${r.foodId}',this)">Confirmar ✓</button>
+            <button class="btn btn-ol btn-sm" onclick="releaseRes('${r.id}','${r.foodId}')">Liberar</button>
+          `:''}
+          <a href="https://wa.me/${r.guestPhone}?text=${waC}" target="_blank"
+             class="btn btn-sm" style="background:#25D366;color:#fff;padding:7px 13px;font-size:10px;">WhatsApp</a>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   };
-  render(pending,'paymentsPending');
-  render(confirmed,'paymentsConfirmed');
+
+  render(pending, 'payPend');
+  render(confed,  'payConf');
 }
 
-async function confirmPayment(resId, phone, name, foodId) {
+async function confirmPay(resId, phone, name, foodId, btn) {
+  btn.disabled = true; btn.innerHTML = '<span class="sp-sm"></span>';
   try {
-    if (!S.isMock) {
-      const r=await apiWrite('confirmPayment',{reservationId:resId,foodId});
-      if (!r.ok) { toast('Erro ao confirmar','error'); return; }
+    if (!S.mock) {
+      const r = await api('confirmPayment', {reservationId: resId, foodId});
+      if (!r.ok) { toast('Erro ao confirmar', 'err'); btn.disabled=false; btn.innerHTML='Confirmar ✓'; return; }
     }
-    const res=S.reservations.find(r=>r.id===resId); if (res) res.status='confirmed';
-    const food=S.foods.find(f=>f.id===foodId); if (food) food.status='confirmed';
-    renderFoodGrid(); renderHeader(); renderPayments();
-    toast('Pagamento confirmado! ✓');
-    const msg=encodeURIComponent(`Olá ${name}! ✅ Seu pagamento foi confirmado. Estamos te esperando no *${S.event?.title||'Jantar dos Casais'}*! 🎉🥂`);
-    window.open(`https://wa.me/${phone}?text=${msg}`,'_blank');
-  } catch(e){ toast('Erro de conexão','error'); }
+    const res  = S.reservations.find(r => r.id === resId);
+    if (res) res.status = 'confirmed';
+    const food = S.foods.find(f => f.id === foodId);
+    if (food) food.status = 'confirmed';
+    renderGrid(); renderHeader(); renderPayments();
+    toast('Pagamento confirmado! ✓', 'suc');
+    const msg = encodeURIComponent(`Olá ${name}! ✅ Pagamento confirmado. Te esperamos no *${S.event?.title||'Jantar dos Casais'}*! 🎉🥂`);
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+  } catch(e) { toast('Erro de conexão', 'err'); }
+  btn.disabled = false; btn.innerHTML = 'Confirmar ✓';
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 //  NAV
-// ═══════════════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelector(`.tab-btn[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById('page-'+tab).classList.add('active');
-  if (tab==='lista') pollLive(); // força refresh ao abrir a lista
+// ═══════════════════════════════════════════════════════════════════
+function goTab(tab, el) {
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
+  if (el) el.classList.add('on');
+  document.getElementById('pg-'+tab).classList.add('on');
+  if (tab === 'lista') poll(); // força atualização ao abrir lista
 }
 
-// ═══════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 //  TOAST
-// ═══════════════════════════════════════════════════════
-function toast(msg, type='') {
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className='';
+// ═══════════════════════════════════════════════════════════════════
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.className = '';
   if (type) el.classList.add(type);
-  el.classList.add('show');
+  el.classList.add('on');
   clearTimeout(el._t);
-  el._t=setTimeout(()=>el.classList.remove('show'),3200);
+  el._t = setTimeout(() => el.classList.remove('on'), 3400);
 }
 
-document.getElementById('reserveModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
 init();
 </script>
 </body>
