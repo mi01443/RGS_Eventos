@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jantar dos Casais</title>
+<meta name="description" content="App de gestão do Jantar dos Casais">
+<meta name="theme-color" content="#1C1208">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Jantar dos Casais">
+<link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 /* ── RESET & TOKENS ─────────────────────────────────────────────── */
@@ -668,6 +675,18 @@ a{text-decoration:none;}
   </div>
 </div>
 
+
+<!-- PWA Install Banner -->
+<div class="pwa-banner" id="pwaBanner">
+  <div class="pwa-icon">🥂</div>
+  <div class="pwa-text">
+    <strong>Instalar o app</strong>
+    <span>Adicione à tela inicial para acesso rápido</span>
+  </div>
+  <button class="pwa-btn" id="pwaInstallBtn" onclick="installPWA()">Instalar</button>
+  <button class="pwa-close" onclick="dismissPWA()" title="Fechar">✕</button>
+</div>
+
 <div id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
@@ -795,9 +814,7 @@ function renderHeader() {
   const ev = S.event; if (!ev) return;
   document.getElementById('hTitle').textContent = ev.title || 'Jantar dos Casais';
   document.title = ev.title || 'Jantar dos Casais';
-  const d = ev.date
-    ? new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})
-    : '—';
+  const d = fmtDate(ev.date);
   const parts = [d, ev.time, ev.local].filter(Boolean);
   document.getElementById('hSub').textContent = parts.join(' • ');
   const free = S.foods.filter(f => f.status==='free').length;
@@ -807,9 +824,7 @@ function renderHeader() {
 function renderHome() {
   const ev = S.event, el = document.getElementById('homeContent');
   if (!ev) { el.innerHTML='<div class="es">Nenhum evento configurado ainda.</div>'; return; }
-  const d = ev.date
-    ? new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'})
-    : '—';
+  const d = fmtDate(ev.date);
   el.innerHTML = `
     <div class="eib">
       <div class="ei"><div class="ei-l">Data</div><div class="ei-v">${d}</div></div>
@@ -994,7 +1009,7 @@ async function goSt3() {
   const ev   = S.event||{};
   const wa   = ev.whatsapp ? '55' + ev.whatsapp : '';
   const val  = Number(ev.valor||0);
-  const d    = ev.date ? new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}) : '';
+  const d    = fmtDate(ev.date);
   const msg  = encodeURIComponent(
     `Olá! Acabei de reservar um item para o evento ` +
     `*${ev.title||'Jantar dos Casais'}* 🎉\n\n` +
@@ -1229,9 +1244,8 @@ function renderPayments() {
     el.innerHTML=list.map(r=>{
       const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
       const ts=r.ts?new Date(r.ts).toLocaleString('pt-BR'):'';
-      // Mensagem de confirmação rica para enviar ao participante
       const ev=S.event||{};
-      const d=ev.date?new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';
+      const d=fmtDate(ev.date);
       const waConfMsg = encodeURIComponent(
         `Olá *${r.person1}* e *${r.person2}*! 🎉\n\n` +
         `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
@@ -1261,6 +1275,8 @@ function renderPayments() {
             ${r.status==='pending'?`
               <button class="btn btn-ok btn-sm" onclick="confirmPay('${r.id}','${r.phone}','${r.foodId}',this)">Confirmar ✓</button>
               <button class="btn btn-ol btn-sm" onclick="releaseRes('${r.id}','${r.foodId}')">Liberar</button>`:''}
+            ${r.status==='confirmed'?`
+              <button class="btn btn-err btn-sm" onclick="cancelRes('${r.id}','${r.foodId}')">Cancelar</button>`:''}
             <a href="https://wa.me/${waPhone}?text=${waConfMsg}" target="_blank"
                class="btn btn-sm" style="background:#25D366;color:#fff;padding:7px 12px;font-size:10px;">WhatsApp</a>
           </div>
@@ -1273,6 +1289,18 @@ function renderPayments() {
   render(confed,'payConf');
 }
 
+async function cancelRes(resId, foodId) {
+  if (!confirm('Cancelar esta reserva? O item voltará a ficar disponível para outros casais.')) return;
+  try {
+    if (!S.mock){const r=await api('releaseFood',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao cancelar','err');return;}}
+    const res=S.reservations.find(r=>r.id===resId); if(res) res.status='cancelled';
+    const food=S.foods.find(f=>f.id===foodId);
+    if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
+    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments();
+    toast('Reserva cancelada — item liberado.','ok');
+  } catch(e){toast('Erro de conexão','err');}
+}
+
 async function confirmPay(resId, phone, foodId, btn) {
   btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span>';
   try {
@@ -1281,11 +1309,9 @@ async function confirmPay(resId, phone, foodId, btn) {
     const food=S.foods.find(f=>f.id===foodId); if(food) food.status='confirmed';
     renderFoodList(); renderHeader(); renderPayments();
     toast('Pagamento confirmado! ✓','ok');
-
-    // Abre WhatsApp com mensagem completa
     const ev=S.event||{}, r=S.reservations.find(r=>r.id===resId)||{};
     const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'';
-    const d=ev.date?new Date(ev.date+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'}):'';
+    const d=fmtDate(ev.date);
     const msg=encodeURIComponent(
       `Olá *${r.person1||''}* e *${r.person2||''}*! 🎉\n\n` +
       `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
@@ -1303,7 +1329,6 @@ async function confirmPay(resId, phone, foodId, btn) {
   btn.disabled=false; btn.innerHTML='Confirmar ✓';
 }
 
-// ── Resumo / Dashboard ───────────────────────────────────────
 async function loadSummary() {
   const el=document.getElementById('summaryContent');
   el.innerHTML='<div class="ld"><div class="sp"></div>Calculando...</div>';
@@ -1351,10 +1376,46 @@ async function loadSummary() {
         <div class="card-title">Lista de participantes</div>
         <div class="card-sub">Todos os casais inscritos</div>
         ${renderParticipantList()}
-      </div>`;
+      </div>
+      <button class="btn btn-dark" style="width:100%;justify-content:center;gap:8px;margin-top:6px;" onclick="sendResumoWa()">
+        📲 Enviar resumo via WhatsApp
+      </button>`;
   } catch(e) {
     el.innerHTML='<div class="es">Erro ao carregar resumo: '+e.message+'</div>';
   }
+}
+
+function sendResumoWa() {
+  const ev  = S.event||{};
+  const d   = fmtDate(ev.date);
+  const res = (S.reservations||[]).filter(r=>r.status!=='cancelled');
+  const lista = res.map((r,i)=>{
+    const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
+    const st = r.status==='confirmed'?'✅':'⏳';
+    return `${i+1}. ${st} ${casal} — ${r.foodName}`;
+  }).join('\n');
+  const confirmados = res.filter(r=>r.status==='confirmed');
+  const pendentes   = res.filter(r=>r.status==='pending');
+  const arrecadado  = confirmados.reduce((s,r)=>s+Number(r.valor||0),0);
+  const aConfirmar  = pendentes.reduce((s,r)=>s+Number(r.valor||0),0);
+  const msg = encodeURIComponent(
+    `📋 *RESUMO DO EVENTO*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
+    `📅 ${d}  🕐 ${ev.time||'—'}\n` +
+    `📍 ${ev.local||'—'}\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `👫 Casais inscritos: *${res.length}*\n` +
+    `👥 Total de pessoas: *${res.length*2}*\n` +
+    `✅ Confirmados: *${confirmados.length}*\n` +
+    `⏳ Aguardando: *${pendentes.length}*\n` +
+    `💰 Arrecadado: *R$ ${fmtMoney(arrecadado)}*\n` +
+    `💳 Pendente: *R$ ${fmtMoney(aConfirmar)}*\n` +
+    `━━━━━━━━━━━━━━━━━━━━\n` +
+    `🍽 *PARTICIPANTES*\n${lista}`
+  );
+  const wa = ev.whatsapp ? '55'+ev.whatsapp : '';
+  window.open(wa?`https://wa.me/${wa}?text=${msg}`:`https://wa.me/?text=${msg}`,'_blank');
 }
 
 function renderParticipantList() {
@@ -1385,6 +1446,25 @@ function goTab(tab, el) {
 // ════════════════════════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════════════════════════
+// fmtDate: converte qualquer formato do Sheets/input para data legível sem bug de fuso
+function fmtDate(raw) {
+  if (!raw || raw==='' || raw==='—') return '—';
+  const s = String(raw).trim();
+  // YYYY-MM-DD (formato do <input type=date> e do Apps Script quando salvo corretamente)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+    const [y,m,d] = s.split('-').map(Number);
+    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  }
+  // DD/MM/YYYY (Sheets às vezes retorna neste formato)
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
+    const [d,m,y] = s.split('/').map(Number);
+    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  }
+  // Fallback com validação
+  const dt = new Date(s);
+  return isNaN(dt.getTime()) ? s : dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+}
+
 function fmtMoney(v) {
   return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 }
@@ -1399,6 +1479,52 @@ function toast(msg, type) {
 }
 
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+// ════════════════════════════════════════════════════════════
+//  PWA — Banner de instalação
+// ════════════════════════════════════════════════════════════
+let _deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _deferredPrompt = e;
+  // Mostra o banner após 3s se o usuário não tiver dispensado antes
+  if (!sessionStorage.getItem('pwaDismissed')) {
+    setTimeout(() => {
+      document.getElementById('pwaBanner').classList.add('show');
+    }, 3000);
+  }
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('pwaBanner').classList.remove('show');
+  _deferredPrompt = null;
+  toast('App instalado com sucesso! 🎉','ok');
+});
+
+function installPWA() {
+  if (!_deferredPrompt) {
+    // iOS / sem suporte nativo: instrução manual
+    toast('No iPhone: Safari → compartilhar → "Adicionar à Tela de Início"');
+    return;
+  }
+  _deferredPrompt.prompt();
+  _deferredPrompt.userChoice.then(r => {
+    _deferredPrompt = null;
+    document.getElementById('pwaBanner').classList.remove('show');
+  });
+}
+
+function dismissPWA() {
+  document.getElementById('pwaBanner').classList.remove('show');
+  sessionStorage.setItem('pwaDismissed','1');
+}
+
+// Service Worker para funcionar offline
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+
 
 init();
 </script>
