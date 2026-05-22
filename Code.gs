@@ -101,10 +101,19 @@ function getConfig() {
     if (!rows[i][0]) continue;
     var key = String(rows[i][0]);
     var val = rows[i][1];
-    // Se for objeto Date (Sheets converte datas automaticamente), formata como YYYY-MM-DD
+    // Sheets pode converter campos de data/hora em objetos Date
     if (val instanceof Date && !isNaN(val.getTime())) {
-      var dd = val.getDate(), mm = val.getMonth()+1, yy = val.getFullYear();
-      val = yy + '-' + (mm<10?'0':'') + mm + '-' + (dd<10?'0':'') + dd;
+      if (key === 'date') {
+        // Campo de data: formata como YYYY-MM-DD
+        var dd = val.getDate(), mm = val.getMonth()+1, yy = val.getFullYear();
+        val = yy + '-' + (mm<10?'0':'') + mm + '-' + (dd<10?'0':'') + dd;
+      } else if (key === 'time') {
+        // Campo de hora: formata como HH:MM
+        var hh = val.getHours(), mi = val.getMinutes();
+        val = (hh<10?'0':'') + hh + ':' + (mi<10?'0':'') + mi;
+      } else {
+        val = String(val);
+      }
     } else {
       val = String(val !== undefined && val !== null ? val : '');
     }
