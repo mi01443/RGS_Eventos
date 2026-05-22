@@ -676,15 +676,16 @@ a{text-decoration:none;}
 </div>
 
 
-<!-- PWA Install Banner -->
-<div class="pwa-banner" id="pwaBanner">
-  <div class="pwa-icon">🥂</div>
-  <div class="pwa-text">
-    <strong>Instalar o app</strong>
-    <span>Adicione à tela inicial para acesso rápido</span>
-  </div>
-  <button class="pwa-btn" id="pwaInstallBtn" onclick="installPWA()">Instalar</button>
-  <button class="pwa-close" onclick="dismissPWA()" title="Fechar">✕</button>
+<!-- PWA Install Popup -->
+<div class="pwa-overlay" id="pwaOverlay" onclick="dismissPWA()"></div>
+<div class="pwa-popup" id="pwaPopup">
+  <button class="pwa-x" onclick="dismissPWA()" aria-label="Fechar">✕</button>
+  <div class="pwa-logo">🥂</div>
+  <h3 class="pwa-title">Instalar o app</h3>
+  <p class="pwa-desc">Adicione o Jantar dos Casais à sua tela inicial e acesse com um toque, mesmo sem internet.</p>
+  <div class="pwa-steps" id="pwaSteps"></div>
+  <button class="pwa-install-btn" id="pwaInstallBtn" onclick="installPWA()">Instalar agora</button>
+  <button class="pwa-skip" onclick="dismissPWA()">Agora não</button>
 </div>
 
 <div id="toast"></div>
@@ -815,7 +816,7 @@ function renderHeader() {
   document.getElementById('hTitle').textContent = ev.title || 'Jantar dos Casais';
   document.title = ev.title || 'Jantar dos Casais';
   const d = fmtDate(ev.date);
-  const parts = [d, ev.time, ev.local].filter(Boolean);
+  const parts = [d, fmtTime(ev.time)||ev.time, ev.local].filter(Boolean).filter(x=>x&&x!=='—');
   document.getElementById('hSub').textContent = parts.join(' • ');
   const free = S.foods.filter(f => f.status==='free').length;
   document.getElementById('hSpots').textContent = `${free} de ${S.foods.length} itens disponíveis`;
@@ -828,7 +829,7 @@ function renderHome() {
   el.innerHTML = `
     <div class="eib">
       <div class="ei"><div class="ei-l">Data</div><div class="ei-v">${d}</div></div>
-      <div class="ei"><div class="ei-l">Horário</div><div class="ei-v">${ev.time||'—'}</div></div>
+      <div class="ei"><div class="ei-l">Horário</div><div class="ei-v">${fmtTime(ev.time)||ev.time||'—'}</div></div>
       <div class="ei"><div class="ei-l">Por casal</div><div class="ei-v gold">R$ ${fmtMoney(ev.valor)}</div></div>
     </div>
     ${ev.local?`<div class="card"><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">📍 Local</div><div style="font-family:'Playfair Display',serif;font-size:1.05rem;">${ev.local}</div></div>`:''}
@@ -1057,7 +1058,7 @@ function fillAdminForm() {
   const ev=S.event||{}, p=S.pix||{};
   document.getElementById('cTitle').value  = ev.title    ||'';
   document.getElementById('cDate').value   = ev.date     ||'';
-  document.getElementById('cTime').value   = ev.time     ||'';
+  document.getElementById('cTime').value   = fmtTime(ev.time);
   document.getElementById('cLocal').value  = ev.local    ||'';
   document.getElementById('cValor').value  = ev.valor    ||'';
   document.getElementById('cDesc').value   = ev.desc     ||'';
@@ -1251,7 +1252,7 @@ function renderPayments() {
         `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
         `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
         `📅 Data: *${d}*\n` +
-        `🕐 Horário: *${ev.time||'—'}*\n` +
+        `🕐 Horário: *${fmtTime(ev.time)||ev.time||'—'}*\n` +
         `📍 Local: *${ev.local||'—'}*\n\n` +
         `👫 Casal: *${casal}*\n` +
         `🍽 Prato confirmado: *${r.foodName}*\n` +
@@ -1317,7 +1318,7 @@ async function confirmPay(resId, phone, foodId, btn) {
       `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
       `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
       `📅 Data: *${d}*\n` +
-      `🕐 Horário: *${ev.time||'—'}*\n` +
+      `🕐 Horário: *${fmtTime(ev.time)||ev.time||'—'}*\n` +
       `📍 Local: *${ev.local||'—'}*\n\n` +
       `👫 Casal: *${casal}*\n` +
       `🍽 Prato confirmado: *${r.foodName||''}*\n` +
@@ -1402,7 +1403,7 @@ function sendResumoWa() {
     `📋 *RESUMO DO EVENTO*\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
-    `📅 ${d}  🕐 ${ev.time||'—'}\n` +
+    `📅 ${d}  🕐 ${fmtTime(ev.time)||ev.time||'—'}\n` +
     `📍 ${ev.local||'—'}\n` +
     `━━━━━━━━━━━━━━━━━━━━\n` +
     `👫 Casais inscritos: *${res.length}*\n` +
@@ -1446,6 +1447,34 @@ function goTab(tab, el) {
 // ════════════════════════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════════════════════════
+
+// fmtTime: converte qualquer formato de hora do Sheets para HH:MM
+function fmtTime(raw) {
+  if (!raw || raw === '' || raw === '—') return '';
+  const s = String(raw).trim();
+  // Já no formato HH:MM ou HH:MM:SS
+  if (/^\d{2}:\d{2}/.test(s)) return s.slice(0,5);
+  // Sheets retorna hora como objeto Date serializado ex: "Sat Dec 30 1899 19:00:00 GMT..."
+  // ou como número decimal (fração do dia)
+  if (/^\d+\.\d+$/.test(s)) {
+    // número decimal: 0.75 = 18:00
+    const frac = parseFloat(s);
+    const totalMin = Math.round(frac * 24 * 60);
+    const h = Math.floor(totalMin / 60) % 24;
+    const m = totalMin % 60;
+    return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  }
+  // String de data completa (ex: "Sat Dec 30 1899 20:00:00 GMT-0300")
+  if (s.length > 8) {
+    const dt = new Date(s);
+    if (!isNaN(dt.getTime())) {
+      const h = dt.getHours(), m = dt.getMinutes();
+      return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+    }
+  }
+  return s;
+}
+
 // fmtDate: converte qualquer formato do Sheets/input para data legível sem bug de fuso
 function fmtDate(raw) {
   if (!raw || raw==='' || raw==='—') return '—';
@@ -1481,42 +1510,68 @@ function toast(msg, type) {
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
 // ════════════════════════════════════════════════════════════
-//  PWA — Banner de instalação
+//  PWA — Popup de instalação
 // ════════════════════════════════════════════════════════════
 let _deferredPrompt = null;
+
+function _isIOS() {
+  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+}
+function _isInStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+}
+
+function _showPopup() {
+  if (_isInStandalone()) return; // já instalado
+  if (sessionStorage.getItem('pwaDismissed')) return;
+  const steps = document.getElementById('pwaSteps');
+  const btn   = document.getElementById('pwaInstallBtn');
+  if (_isIOS()) {
+    steps.innerHTML = `
+      <div class="pwa-step"><div class="pwa-step-num">1</div>Toque em <strong>Compartilhar</strong> (ícone de seta para cima) no Safari</div>
+      <div class="pwa-step"><div class="pwa-step-num">2</div>Role e toque em <strong>"Adicionar à Tela de Início"</strong></div>
+      <div class="pwa-step"><div class="pwa-step-num">3</div>Confirme tocando em <strong>Adicionar</strong></div>`;
+    btn.textContent = 'Entendido!';
+  } else {
+    steps.innerHTML = `
+      <div class="pwa-step"><div class="pwa-step-num">1</div>Clique em <strong>Instalar agora</strong> abaixo</div>
+      <div class="pwa-step"><div class="pwa-step-num">2</div>Confirme no diálogo do navegador</div>
+      <div class="pwa-step"><div class="pwa-step-num">3</div>O app aparece na sua tela inicial 🎉</div>`;
+  }
+  document.getElementById('pwaOverlay').classList.add('show');
+  document.getElementById('pwaPopup').classList.add('show');
+}
 
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
   _deferredPrompt = e;
-  // Mostra o banner após 3s se o usuário não tiver dispensado antes
-  if (!sessionStorage.getItem('pwaDismissed')) {
-    setTimeout(() => {
-      document.getElementById('pwaBanner').classList.add('show');
-    }, 3000);
+  setTimeout(_showPopup, 2500);
+});
+
+// iOS não dispara beforeinstallprompt — mostra popup com instruções manuais
+window.addEventListener('load', () => {
+  if (_isIOS() && !_isInStandalone()) {
+    setTimeout(_showPopup, 2500);
   }
 });
 
 window.addEventListener('appinstalled', () => {
-  document.getElementById('pwaBanner').classList.remove('show');
-  _deferredPrompt = null;
+  dismissPWA();
   toast('App instalado com sucesso! 🎉','ok');
 });
 
 function installPWA() {
-  if (!_deferredPrompt) {
-    // iOS / sem suporte nativo: instrução manual
-    toast('No iPhone: Safari → compartilhar → "Adicionar à Tela de Início"');
-    return;
-  }
+  if (_isIOS() || !_deferredPrompt) { dismissPWA(); return; }
   _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(r => {
+  _deferredPrompt.userChoice.then(() => {
     _deferredPrompt = null;
-    document.getElementById('pwaBanner').classList.remove('show');
+    dismissPWA();
   });
 }
 
 function dismissPWA() {
-  document.getElementById('pwaBanner').classList.remove('show');
+  document.getElementById('pwaOverlay').classList.remove('show');
+  document.getElementById('pwaPopup').classList.remove('show');
   sessionStorage.setItem('pwaDismissed','1');
 }
 
