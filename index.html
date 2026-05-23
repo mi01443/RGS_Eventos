@@ -13,184 +13,96 @@
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── RESET & TOKENS ─────────────────────────────────────────────── */
-*{margin:0;padding:0;box-sizing:border-box;}
+*{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#F5F0E8;
-  --surface:#FFFFFF;
-  --surface2:#FAF7F2;
-  --border:#E2D5C0;
-  --border2:#D4C4A8;
-  --gold:#B8860B;
-  --gold2:#D4A017;
-  --gold-light:#F0D080;
-  --gold-bg:rgba(184,134,11,.08);
-  --dark:#1C1208;
-  --brown:#4A2C0A;
-  --text:#2A1A06;
-  --muted:#8C7355;
-  --ok:#2D6A4F;
-  --ok-bg:rgba(45,106,79,.09);
-  --warn:#92400E;
-  --warn-bg:rgba(146,64,14,.09);
-  --err:#991B1B;
-  --err-bg:rgba(153,27,27,.08);
-  --info:#1E40AF;
-  --r:10px;
-  --r2:16px;
+  --bg:#F5F0E8;--surface:#FFF;--surface2:#FAF7F2;--border:#E2D5C0;--border2:#D4C4A8;
+  --gold:#B8860B;--gold2:#D4A017;--gold-light:#F0D080;--gold-bg:rgba(184,134,11,.08);
+  --dark:#1C1208;--brown:#4A2C0A;--text:#2A1A06;--muted:#8C7355;
+  --ok:#2D6A4F;--ok-bg:rgba(45,106,79,.09);--ok-bord:rgba(45,106,79,.25);
+  --warn:#92400E;--warn-bg:rgba(146,64,14,.09);
+  --err:#991B1B;--err-bg:rgba(153,27,27,.08);--err-bord:rgba(153,27,27,.2);
+  --info:#1E40AF;--info-bg:rgba(30,64,175,.07);
+  --r:10px;--r2:16px;
   --sh:0 1px 4px rgba(28,18,8,.08),0 4px 16px rgba(28,18,8,.06);
   --shl:0 8px 40px rgba(28,18,8,.18);
   --trans:.22s ease;
 }
 html,body{min-height:100vh;}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
-h1,h2,h3,.serif{font-family:'Playfair Display',serif;}
+h1,h2,h3{font-family:'Playfair Display',serif;font-weight:400;}
 button{cursor:pointer;font-family:'Inter',sans-serif;}
 a{text-decoration:none;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
-
-/* ── HEADER ─────────────────────────────────────────────────────── */
-.hd{
-  background:linear-gradient(160deg,#1C1208 0%,#2E1B0A 50%,#1C1208 100%);
-  color:#F5EDD8;text-align:center;
-  padding:52px 20px 40px;position:relative;overflow:hidden;
-}
-.hd::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(212,160,23,.22) 0%,transparent 70%);
-}
+/* HEADER */
+.hd{background:linear-gradient(160deg,#1C1208 0%,#2E1B0A 50%,#1C1208 100%);color:#F5EDD8;text-align:center;padding:52px 20px 40px;position:relative;overflow:hidden;}
+.hd::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(212,160,23,.22) 0%,transparent 70%);}
 .hd-inner{position:relative;z-index:1;}
-.orn{
-  font-size:10px;letter-spacing:7px;text-transform:uppercase;
-  color:var(--gold2);margin-bottom:14px;opacity:.9;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-}
+.orn{font-size:10px;letter-spacing:7px;text-transform:uppercase;color:var(--gold2);margin-bottom:14px;opacity:.9;display:flex;align-items:center;justify-content:center;gap:10px;}
 .orn::before,.orn::after{content:'';width:40px;height:1px;background:currentColor;opacity:.5;}
-.hd h1{
-  font-size:clamp(2.2rem,7vw,3.8rem);font-weight:400;font-style:italic;
-  letter-spacing:.5px;line-height:1.08;margin-bottom:8px;
-  background:linear-gradient(135deg,#F5EDD8,var(--gold-light),#F5EDD8);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
+.hd h1{font-size:clamp(2.2rem,7vw,3.8rem);font-weight:400;font-style:italic;letter-spacing:.5px;line-height:1.08;margin-bottom:8px;background:linear-gradient(135deg,#F5EDD8,var(--gold-light),#F5EDD8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hd-sub{font-size:12px;letter-spacing:4px;text-transform:uppercase;opacity:.45;margin-bottom:22px;}
-.hd-meta{
-  display:inline-flex;align-items:center;gap:10px;
-  background:rgba(212,160,23,.14);border:1px solid rgba(212,160,23,.28);
-  border-radius:99px;padding:7px 20px;font-size:12px;color:var(--gold-light);
-  letter-spacing:.5px;
-}
+.hd-meta{display:inline-flex;align-items:center;gap:10px;background:rgba(212,160,23,.14);border:1px solid rgba(212,160,23,.28);border-radius:99px;padding:7px 20px;font-size:12px;color:var(--gold-light);letter-spacing:.5px;}
 .hd-meta .dot{width:5px;height:5px;border-radius:50%;background:var(--gold2);}
 
-/* ── SYNC BAR ── */
-.sync{
-  background:#111;display:flex;align-items:center;justify-content:center;
-  gap:7px;padding:5px 14px;font-size:10px;letter-spacing:2px;
-  text-transform:uppercase;color:var(--gold2);
-}
+/* SYNC */
+.sync{background:#111;display:flex;align-items:center;justify-content:center;gap:7px;padding:5px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);}
 .sync-dot{width:5px;height:5px;border-radius:50%;background:var(--gold2);animation:pb 2s ease infinite;}
 .sync-dot.active{animation-duration:.5s;}
 @keyframes pb{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── TABS ── */
-.nav{
-  background:var(--surface);border-bottom:1px solid var(--border);
-  display:flex;justify-content:center;
-  position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(28,18,8,.07);
-}
-.nav-btn{
-  background:none;border:none;border-bottom:2.5px solid transparent;
-  padding:14px 24px;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
-  color:var(--muted);font-weight:500;transition:all var(--trans);
-}
+/* NAV */
+.nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;justify-content:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(28,18,8,.07);}
+.nav-btn{background:none;border:none;border-bottom:2.5px solid transparent;padding:14px 24px;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);font-weight:500;transition:all var(--trans);}
 .nav-btn.on{color:var(--gold);border-bottom-color:var(--gold);}
 .nav-btn:hover:not(.on){color:var(--brown);}
 
-/* ── PAGE ── */
+/* PAGE */
 .wrap{max-width:700px;margin:0 auto;padding:28px 14px 90px;}
-.pg{display:none;animation:fi .28s ease;} .pg.on{display:block;}
+.pg{display:none;animation:fi .28s ease;}.pg.on{display:block;}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* ── CARDS ── */
+/* CARDS */
 .card{background:var(--surface);border-radius:var(--r2);border:1px solid var(--border);padding:24px;margin-bottom:14px;box-shadow:var(--sh);}
 .card-title{font-family:'Playfair Display',serif;font-size:1.3rem;font-style:italic;color:var(--brown);margin-bottom:2px;}
 .card-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
 
-/* ── EVENT INFO BAR ── */
-.eib{
-  background:linear-gradient(135deg,var(--surface2),var(--surface));
-  border:1px solid var(--border2);border-radius:var(--r2);
-  padding:20px 24px;margin-bottom:22px;
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
-  position:relative;overflow:hidden;
-}
+/* EVENT INFO BAR */
+.eib{background:linear-gradient(135deg,var(--surface2),var(--surface));border:1px solid var(--border2);border-radius:var(--r2);padding:20px 24px;margin-bottom:22px;display:grid;grid-template-columns:repeat(3,1fr);position:relative;overflow:hidden;}
 .eib::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));}
 .ei{padding:8px 12px;text-align:center;}
 .ei-l{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .ei-v{font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--brown);}
 .ei-v.gold{color:var(--gold);font-weight:600;}
 
-/* ── DASHBOARD ── */
+/* STATS */
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
-.stat-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
-  padding:16px;position:relative;overflow:hidden;
-}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden;}
 .stat-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
 .stat-card.c1::before{background:var(--gold);}
 .stat-card.c2::before{background:var(--ok);}
 .stat-card.c3::before{background:var(--info);}
 .stat-card.c4::before{background:var(--warn);}
 .stat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:600;line-height:1;margin-bottom:4px;}
-.stat-n.gold{color:var(--gold);}
-.stat-n.ok{color:var(--ok);}
-.stat-n.blue{color:var(--info);}
-.stat-n.warn{color:var(--warn);}
+.stat-n.gold{color:var(--gold);}.stat-n.ok{color:var(--ok);}.stat-n.blue{color:var(--info);}.stat-n.warn{color:var(--warn);}
 .stat-l{font-size:11px;color:var(--muted);}
 .stat-s{font-size:11px;color:var(--muted);margin-top:2px;}
 
-/* ── SECTION LABEL ── */
-.sl{
-  font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);
-  margin-bottom:14px;display:flex;align-items:center;gap:10px;
-}
+/* SECTION LABEL */
+.sl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .sl::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* ── FILTER BAR ── */
-.filter-bar{
-  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;
-  padding:12px 14px;background:var(--surface);
-  border:1px solid var(--border);border-radius:var(--r);
-}
-.f-btn{
-  background:none;border:1.5px solid var(--border);border-radius:99px;
-  padding:5px 13px;font-size:11px;letter-spacing:.5px;color:var(--muted);
-  transition:all var(--trans);font-family:'Inter',sans-serif;
-}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);}
+.f-btn{background:none;border:1.5px solid var(--border);border-radius:99px;padding:5px 13px;font-size:11px;color:var(--muted);transition:all var(--trans);font-family:'Inter',sans-serif;}
 .f-btn.on{background:var(--dark);border-color:var(--dark);color:#F5EDD8;}
 .f-btn:hover:not(.on){border-color:var(--muted);color:var(--text);}
 
-/* ── FOOD GROUPS ── */
+/* FOOD */
 .food-group{margin-bottom:20px;}
-.food-group-title{
-  font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;
-  color:var(--brown);padding:8px 0;margin-bottom:8px;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:8px;
-}
+.food-group-title{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--brown);padding:8px 0;margin-bottom:8px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
 .food-grid{display:grid;gap:8px;}
-
-/* ── FOOD ITEM ── */
-.fi{
-  background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  cursor:pointer;transition:all var(--trans);position:relative;overflow:hidden;
-  gap:10px;
-}
+.fi{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:all var(--trans);position:relative;overflow:hidden;gap:10px;}
 .fi::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:2px 0 0 2px;transform:scaleY(0);transition:transform var(--trans);}
 .fi.free:hover{border-color:var(--gold2);box-shadow:0 3px 12px rgba(184,134,11,.12);transform:translateY(-1px);}
 .fi.free:hover::before{transform:scaleY(1);background:var(--gold);}
@@ -201,87 +113,47 @@ a{text-decoration:none;}
 .fi-left{flex:1;min-width:0;}
 .fi-name{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fi-sub{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.badge{
-  font-size:10px;letter-spacing:.8px;text-transform:uppercase;
-  padding:4px 10px;border-radius:99px;font-weight:600;flex-shrink:0;
-}
+.badge{font-size:10px;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:99px;font-weight:600;flex-shrink:0;}
 .badge.free{background:var(--gold-bg);color:var(--gold);}
 .badge.taken{background:var(--err-bg);color:var(--err);}
 .badge.confirmed{background:var(--ok-bg);color:var(--ok);}
 
-/* ── MODAL ── */
-.mo{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(28,18,8,.6);backdrop-filter:blur(6px);
-  display:flex;align-items:center;justify-content:center;padding:14px;
-  opacity:0;pointer-events:none;transition:opacity .24s;
-}
+/* MODAL */
+.mo{position:fixed;inset:0;z-index:1000;background:rgba(28,18,8,.6);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:14px;opacity:0;pointer-events:none;transition:opacity .24s;}
 .mo.on{opacity:1;pointer-events:all;}
-.mdl{
-  background:var(--surface);border-radius:20px;padding:32px;
-  max-width:460px;width:100%;box-shadow:var(--shl);
-  transform:translateY(12px) scale(.97);transition:transform .24s;
-  max-height:90vh;overflow-y:auto;
-}
+.mdl{background:var(--surface);border-radius:20px;padding:32px;max-width:460px;width:100%;box-shadow:var(--shl);transform:translateY(12px) scale(.97);transition:transform .24s;max-height:90vh;overflow-y:auto;}
 .mo.on .mdl{transform:none;}
 .mdl-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-style:italic;color:var(--brown);margin-bottom:2px;}
 .mdl-sub{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--muted);margin-bottom:22px;}
-.step{display:none;} .step.on{display:block;}
+.step{display:none;}.step.on{display:block;}
 
-/* ── SELECTED ITEM BOX ── */
-.sel-box{
-  background:linear-gradient(135deg,var(--surface2),var(--surface));
-  border:1px solid var(--border2);border-radius:var(--r);
-  padding:14px 18px;margin-bottom:20px;
-  display:flex;align-items:center;gap:12px;
-}
+/* SEL BOX */
+.sel-box{background:linear-gradient(135deg,var(--surface2),var(--surface));border:1px solid var(--border2);border-radius:var(--r);padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
 .sel-icon{font-size:22px;flex-shrink:0;}
 .sel-name{font-family:'Playfair Display',serif;font-size:1.1rem;}
 .sel-type{font-size:11px;color:var(--muted);}
 
-/* ── FORM ── */
+/* FORM */
 .fg{margin-bottom:14px;}
 .fg label{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;font-weight:500;}
-.fg input,.fg select,.fg textarea{
-  width:100%;padding:11px 14px;
-  border:1.5px solid var(--border);border-radius:8px;
-  font-family:'Inter',sans-serif;font-size:14px;color:var(--text);
-  background:var(--surface);outline:none;transition:border-color var(--trans);
-}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'Inter',sans-serif;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color var(--trans);}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold2);}
 .fg textarea{resize:vertical;min-height:70px;}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
-/* ── PIX ── */
-.pix-box{
-  background:linear-gradient(135deg,var(--surface2),#FFF9EE);
-  border:1px solid var(--border2);border-radius:var(--r2);
-  padding:24px;text-align:center;margin:18px 0;
-}
-.pix-amt{
-  font-family:'Playfair Display',serif;font-size:2.4rem;
-  color:var(--gold);font-weight:600;margin-bottom:6px;
-}
+/* PIX */
+.pix-box{background:linear-gradient(135deg,var(--surface2),#FFF9EE);border:1px solid var(--border2);border-radius:var(--r2);padding:24px;text-align:center;margin:18px 0;}
+.pix-amt{font-family:'Playfair Display',serif;font-size:2.4rem;color:var(--gold);font-weight:600;margin-bottom:6px;}
 .pix-key-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .pix-key{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--brown);word-break:break-all;margin:6px 0 2px;}
 .pix-own{font-size:12px;color:var(--muted);margin-bottom:14px;}
 #qrw{margin:14px auto;display:flex;justify-content:center;}
 #qrw canvas,#qrw img{border-radius:10px;border:4px solid var(--border2);}
-.copy-btn{
-  background:none;border:1.5px solid var(--gold);color:var(--gold);
-  padding:7px 18px;border-radius:99px;font-size:11px;letter-spacing:1px;
-  text-transform:uppercase;transition:all var(--trans);font-weight:600;
-}
+.copy-btn{background:none;border:1.5px solid var(--gold);color:var(--gold);padding:7px 18px;border-radius:99px;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:all var(--trans);font-weight:600;}
 .copy-btn:hover{background:var(--gold);color:#fff;}
 
-/* ── BUTTONS ── */
-.btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:12px 26px;border-radius:99px;
-  font-family:'Inter',sans-serif;font-size:12px;letter-spacing:1.5px;
-  text-transform:uppercase;font-weight:600;border:none;
-  transition:all var(--trans);text-decoration:none;cursor:pointer;
-}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 26px;border-radius:99px;font-family:'Inter',sans-serif;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;border:none;transition:all var(--trans);text-decoration:none;cursor:pointer;}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none!important;}
 .btn-dark{background:var(--dark);color:#F5EDD8;}
 .btn-dark:not(:disabled):hover{background:var(--brown);transform:translateY(-1px);box-shadow:0 4px 16px rgba(28,18,8,.2);}
@@ -290,113 +162,73 @@ a{text-decoration:none;}
 .btn-ol{background:none;border:1.5px solid var(--border2);color:var(--muted);}
 .btn-ol:not(:disabled):hover{border-color:var(--muted);color:var(--text);}
 .btn-ok{background:var(--ok);color:#fff;}
-.btn-ok:not(:disabled):hover{filter:brightness(1.1);}
 .btn-err{background:var(--err);color:#fff;}
-.btn-err:not(:disabled):hover{filter:brightness(1.1);}
 .btn-sm{padding:7px 14px;font-size:10px;}
 .btn-fw{width:100%;}
 .btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap;}
 
-/* ── NOTICE ── */
+/* NOTICE */
 .notice{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
 .n-info{background:var(--gold-bg);border:1px solid rgba(184,134,11,.2);color:var(--brown);}
-.n-ok{background:var(--ok-bg);border:1px solid rgba(45,106,79,.2);color:var(--ok);}
-.n-err{background:var(--err-bg);border:1px solid rgba(153,27,27,.2);color:var(--err);}
 
-/* ── SUCCESS ── */
+/* SUCCESS */
 .sico{width:64px;height:64px;background:var(--ok-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;}
 .tc{text-align:center;}
-.wa-btn{
-  display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;
-  padding:14px 28px;border-radius:99px;font-size:13px;font-weight:600;
-  text-decoration:none;transition:all var(--trans);margin-top:14px;
-}
-.wa-btn:hover{background:#1ebe58;transform:translateY(-1px);box-shadow:0 4px 16px rgba(37,211,102,.3);}
+.wa-btn{display:inline-flex;align-items:center;gap:10px;background:#25D366;color:#fff;padding:14px 28px;border-radius:99px;font-size:13px;font-weight:600;text-decoration:none;transition:all var(--trans);margin-top:14px;}
+.wa-btn:hover{background:#1ebe58;transform:translateY(-1px);}
 
-/* ── ADMIN LOCK ── */
-.alck{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);
-  padding:40px 32px;text-align:center;max-width:360px;margin:40px auto;box-shadow:var(--sh);
-}
+/* ADMIN */
+.alck{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);padding:40px 32px;text-align:center;max-width:360px;margin:40px auto;box-shadow:var(--sh);}
 .alck .ico{font-size:42px;margin-bottom:16px;}
 .alck h2{font-size:1.6rem;font-style:italic;color:var(--brown);margin-bottom:20px;}
-
-/* ── ADMIN TABS ── */
 .atabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;}
-.atb{
-  padding:7px 16px;border-radius:99px;background:none;
-  border:1.5px solid var(--border);font-size:10px;letter-spacing:1.5px;
-  text-transform:uppercase;color:var(--muted);transition:all var(--trans);
-  font-family:'Inter',sans-serif;font-weight:500;
-}
+.atb{padding:7px 16px;border-radius:99px;background:none;border:1.5px solid var(--border);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:all var(--trans);font-family:'Inter',sans-serif;font-weight:500;}
 .atb.on{background:var(--dark);color:#F5EDD8;border-color:var(--dark);}
-.asec{display:none;} .asec.on{display:block;}
+.asec{display:none;}.asec.on{display:block;}
 
-/* ── IMPORT TXT ── */
-.import-area{
-  border:2px dashed var(--border2);border-radius:var(--r);padding:24px;
-  text-align:center;background:var(--surface2);margin-bottom:12px;
-  cursor:pointer;transition:all var(--trans);
-}
+/* IMPORT */
+.import-area{border:2px dashed var(--border2);border-radius:var(--r);padding:24px;text-align:center;background:var(--surface2);margin-bottom:12px;cursor:pointer;transition:all var(--trans);}
 .import-area:hover,.import-area.over{border-color:var(--gold2);background:var(--gold-bg);}
 .import-area input[type=file]{display:none;}
-.import-preview{
-  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
-  max-height:180px;overflow-y:auto;font-size:12px;
-  font-family:monospace;padding:10px 14px;margin-bottom:10px;
-  display:none;
-}
+.import-preview{background:var(--surface2);border:1px solid var(--border);border-radius:8px;max-height:180px;overflow-y:auto;font-size:12px;font-family:monospace;padding:10px 14px;margin-bottom:10px;display:none;}
 .import-preview.on{display:block;}
 
-/* ── PAYMENT CARD ── */
-.pc{
-  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
-  padding:16px 18px;margin-bottom:9px;
-  display:flex;align-items:flex-start;justify-content:space-between;
-  flex-wrap:wrap;gap:10px;
-}
+/* PAYMENT CARD */
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:9px;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;}
 .pc-name{font-family:'Playfair Display',serif;font-size:1.05rem;}
 .pc-det{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.6;}
 .pc-badge{font-size:10px;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.8px;font-weight:600;}
 .pc-badge.pending{background:var(--warn-bg);color:var(--warn);}
 .pc-badge.confirmed{background:var(--ok-bg);color:var(--ok);}
 
-/* ── ADMIN FOOD ROW ── */
+/* ADMIN FOOD ROW */
 .afr{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap;}
 .afr:last-child{border-bottom:none;}
 .afr-name{font-family:'Playfair Display',serif;font-size:1rem;}
 .afr-sub{font-size:10px;color:var(--muted);}
 
-/* ── SPINNER / LOADING ── */
+/* SPINNER */
 .sp{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px;}
 .sp-sm{width:13px;height:13px;border-width:2px;margin:0;display:inline-block;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ld{text-align:center;padding:44px;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;font-size:1.1rem;}
 .es{text-align:center;padding:44px 22px;color:var(--muted);font-style:italic;font-family:'Playfair Display',serif;font-size:1rem;}
 
-/* ── TOAST ── */
-#toast{
-  position:fixed;bottom:24px;left:50%;
-  transform:translateX(-50%) translateY(12px);
-  background:var(--dark);color:#F5EDD8;
-  padding:11px 22px;border-radius:99px;font-size:13px;font-weight:500;
-  z-index:9999;opacity:0;transition:all .26s;pointer-events:none;
-  white-space:nowrap;max-width:92vw;text-align:center;
-}
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--dark);color:#F5EDD8;padding:11px 22px;border-radius:99px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:all .26s;pointer-events:none;white-space:nowrap;max-width:92vw;text-align:center;}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.ok{background:var(--ok);}
 #toast.err{background:var(--err);}
 
-/* ── CONFIG BANNER ── */
+/* CONFIG BANNER */
 .cfgb{background:#FFF8E1;border:1px solid #E6B800;border-radius:8px;padding:12px 16px;font-size:13px;color:#7A5700;margin:14px;display:none;}
 .cfgb.on{display:block;}
 .cfgb code{background:rgba(0,0,0,.08);padding:1px 5px;border-radius:4px;font-size:12px;}
 
-/* ── RESPONSIVE ── */
 @media(max-width:500px){
   .wrap{padding:18px 10px 80px;}
   .mdl{padding:24px 16px;}
-  .eib{grid-template-columns:1fr 1fr;} .eib .ei:last-child{grid-column:1/-1;}
+  .eib{grid-template-columns:1fr 1fr;}.eib .ei:last-child{grid-column:1/-1;}
   .stats{grid-template-columns:1fr 1fr;}
   .nav-btn{padding:12px 14px;font-size:10px;}
   .fg-row{grid-template-columns:1fr;}
@@ -406,29 +238,23 @@ a{text-decoration:none;}
 <body>
 
 <div class="cfgb" id="cfgBanner">
-  ⚙️ <strong>Modo demonstração.</strong> Configure a variável <code>SHEET_URL</code> no script com a URL do seu Apps Script publicado e recarregue a página.
+  ⚙️ <strong>Modo demonstração.</strong> Configure a variável <code>SHEET_URL</code> no script com a URL do seu Apps Script publicado.
 </div>
 
-<!-- HEADER -->
 <header class="hd">
   <div class="hd-inner">
     <div class="orn">Uma noite especial</div>
     <h1 id="hTitle">Jantar dos Casais</h1>
     <p class="hd-sub" id="hSub">carregando...</p>
-    <div class="hd-meta">
-      <span class="dot"></span>
-      <span id="hSpots">— itens disponíveis</span>
-    </div>
+    <div class="hd-meta"><span class="dot"></span><span id="hSpots">— itens disponíveis</span></div>
   </div>
 </header>
 
-<!-- SYNC -->
 <div class="sync">
   <span class="sync-dot" id="syncDot"></span>
   <span id="syncMsg">Conectando...</span>
 </div>
 
-<!-- TABS -->
 <nav class="nav">
   <button class="nav-btn on" onclick="goTab('home',this)">Início</button>
   <button class="nav-btn"    onclick="goTab('lista',this)">Lista</button>
@@ -437,14 +263,13 @@ a{text-decoration:none;}
 
 <div class="wrap">
 
-  <!-- ── HOME ── -->
+  <!-- HOME -->
   <div class="pg on" id="pg-home">
     <div id="homeContent"><div class="ld"><div class="sp"></div>Carregando...</div></div>
   </div>
 
-  <!-- ── LISTA ── -->
+  <!-- LISTA -->
   <div class="pg" id="pg-lista">
-    <!-- Filtros -->
     <div class="filter-bar" id="filterBar">
       <button class="f-btn on" onclick="setFilter('all',this)">Todos</button>
       <button class="f-btn"    onclick="setFilter('free',this)">Disponíveis</button>
@@ -457,22 +282,18 @@ a{text-decoration:none;}
     <div id="foodList"></div>
   </div>
 
-  <!-- ── ADMIN ── -->
+  <!-- ADMIN -->
   <div class="pg" id="pg-admin">
-
-    <!-- LOCK -->
     <div class="alck" id="adminLock">
-      <div class="ico">🔐</div>
+      <div class="ico">💍</div>
       <h2>Área Restrita</h2>
       <div class="fg">
         <label>Senha de administrador</label>
-        <input type="password" id="adminPass" placeholder="••••••••"
-               onkeydown="if(event.key==='Enter')doLogin()">
+        <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
       <button class="btn btn-dark btn-fw" onclick="doLogin()">Entrar</button>
     </div>
 
-    <!-- PAINEL -->
     <div id="adminPanel" style="display:none">
       <div class="atabs">
         <button class="atb on" onclick="goAdminTab('Evento',this)">Evento</button>
@@ -482,61 +303,44 @@ a{text-decoration:none;}
         <button class="atb"    onclick="goAdminTab('Resumo',this)">Resumo</button>
       </div>
 
-      <!-- EVENTO -->
       <div class="asec on" id="asEvento">
         <div class="card">
           <div class="card-title">Configurar Evento</div>
           <div class="card-sub">Dados gerais do jantar</div>
-          <div class="fg"><label>Título do evento</label>
-            <input id="cTitle" placeholder="Jantar dos Casais 2025"></div>
+          <div class="fg"><label>Título do evento</label><input id="cTitle" placeholder="Jantar dos Casais 2025"></div>
           <div class="fg-row">
-            <div class="fg"><label>Data</label>
-              <input type="date" id="cDate"></div>
-            <div class="fg"><label>Horário</label>
-              <input type="time" id="cTime"></div>
+            <div class="fg"><label>Data</label><input type="date" id="cDate"></div>
+            <div class="fg"><label>Horário</label><input type="time" id="cTime"></div>
           </div>
-          <div class="fg"><label>Local</label>
-            <input id="cLocal" placeholder="Rua das Flores, 123 — Bairro, Cidade"></div>
-          <div class="fg"><label>Valor por casal (R$)</label>
-            <input type="number" id="cValor" placeholder="100" min="0" step="0.01"></div>
-          <div class="fg"><label>Descrição (opcional)</label>
-            <textarea id="cDesc" placeholder="Uma noite especial entre amigos e casais..."></textarea></div>
-          <div class="fg"><label>WhatsApp do admin (DDD + número, sem 55)</label>
-            <input id="cWa" placeholder="21999999999"></div>
-          <div class="fg"><label>Nova senha do admin (deixe em branco para manter)</label>
-            <input type="password" id="cSenha" placeholder="Nova senha"></div>
+          <div class="fg"><label>Local</label><input id="cLocal" placeholder="Rua das Flores, 123 — Cidade"></div>
+          <div class="fg"><label>Valor por casal (R$)</label><input type="number" id="cValor" placeholder="100" min="0" step="0.01"></div>
+          <div class="fg"><label>Descrição (opcional)</label><textarea id="cDesc" placeholder="Uma noite especial..."></textarea></div>
+          <div class="fg"><label>WhatsApp do admin (DDD + número, sem 55)</label><input id="cWa" placeholder="21999999999"></div>
+          <div class="fg"><label>Nova senha do admin (deixe em branco para manter)</label><input type="password" id="cSenha"></div>
           <button class="btn btn-dark" id="btnSaveEvt" onclick="saveConfig()">Salvar configurações</button>
         </div>
       </div>
 
-      <!-- PIX -->
       <div class="asec" id="asPix">
         <div class="card">
           <div class="card-title">Configurações PIX</div>
           <div class="card-sub">Dados para recebimento</div>
-          <div class="fg"><label>Chave PIX</label>
-            <input id="cPKey" placeholder="email@exemplo.com, CPF ou telefone"></div>
+          <div class="fg"><label>Chave PIX</label><input id="cPKey" placeholder="email, CPF ou telefone"></div>
           <div class="fg-row">
-            <div class="fg"><label>Nome do recebedor</label>
-              <input id="cPName" placeholder="João Silva"></div>
-            <div class="fg"><label>Banco (opcional)</label>
-              <input id="cPBank" placeholder="Nubank, Bradesco..."></div>
+            <div class="fg"><label>Nome do recebedor</label><input id="cPName" placeholder="João Silva"></div>
+            <div class="fg"><label>Banco (opcional)</label><input id="cPBank" placeholder="Nubank..."></div>
           </div>
-          <div class="notice n-info">ℹ️ O QR Code será gerado automaticamente com a chave PIX cadastrada.</div>
+          <div class="notice n-info">ℹ️ O QR Code é gerado automaticamente com a chave PIX cadastrada.</div>
           <button class="btn btn-dark" id="btnSavePix" onclick="savePix()">Salvar PIX</button>
         </div>
       </div>
 
-      <!-- LISTA -->
       <div class="asec" id="asLista">
-        <!-- Cadastro manual -->
         <div class="card">
           <div class="card-title">Adicionar Item</div>
-          <div class="card-sub">Cadastro manual de itens</div>
+          <div class="card-sub">Cadastro manual</div>
           <div class="fg-row">
-            <div class="fg"><label>Nome do item</label>
-              <input id="nFoodName" placeholder="Lasanha de frango"
-                     onkeydown="if(event.key==='Enter')addFood()"></div>
+            <div class="fg"><label>Nome do item</label><input id="nFoodName" placeholder="Lasanha de frango" onkeydown="if(event.key==='Enter')addFood()"></div>
             <div class="fg"><label>Categoria</label>
               <select id="nFoodType">
                 <option value="Salgado">🧆 Salgado</option>
@@ -548,44 +352,29 @@ a{text-decoration:none;}
           </div>
           <button class="btn btn-dark" id="btnAddFood" onclick="addFood()">Adicionar à lista</button>
         </div>
-
-        <!-- Importação TXT -->
         <div class="card">
           <div class="card-title">Importar Lista (.txt)</div>
-          <div class="card-sub">Importe vários itens de uma vez</div>
-          <div class="notice n-info">
-            📄 Formato do arquivo: <strong>Nome;Categoria</strong> — uma linha por item.<br>
-            Exemplo:<br>
-            <code style="font-size:12px;">Lasanha de frango;Salgado<br>Bolo de chocolate;Doce<br>Suco de laranja;Bebida</code>
-          </div>
+          <div class="card-sub">Vários itens de uma vez</div>
+          <div class="notice n-info">📄 Formato: <strong>Nome;Categoria</strong> — uma linha por item.<br>Ex: <code style="font-size:12px;">Lasanha de frango;Salgado</code></div>
           <div class="import-area" id="importArea" onclick="document.getElementById('importFile').click()"
-               ondragover="event.preventDefault();this.classList.add('over')"
-               ondragleave="this.classList.remove('over')"
-               ondrop="handleDrop(event)">
+               ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
             <input type="file" id="importFile" accept=".txt" onchange="handleFileSelect(event)">
             <div style="font-size:28px;margin-bottom:8px;">📂</div>
             <div style="font-weight:600;color:var(--brown);margin-bottom:4px;">Clique ou arraste o arquivo .txt</div>
-            <div style="font-size:12px;color:var(--muted);">Formato: Nome;Categoria — uma linha por item</div>
+            <div style="font-size:12px;color:var(--muted);">Formato: Nome;Categoria</div>
           </div>
           <div class="import-preview" id="importPreview"></div>
-          <div id="importActions" style="display:none;display:flex;gap:8px;margin-top:4px;">
+          <div id="importActions" style="display:none;gap:8px;margin-top:4px;">
             <button class="btn btn-dark btn-sm" id="btnImport" onclick="importFoods()">Importar itens</button>
             <button class="btn btn-ol btn-sm" onclick="clearImport()">Limpar</button>
           </div>
         </div>
-
-        <!-- Lista cadastrada -->
         <div class="card" style="padding:0;overflow:hidden;">
-          <div style="padding:20px 20px 0;margin-bottom:10px;">
-            <div class="card-title" style="padding:0">Itens cadastrados</div>
-          </div>
-          <div id="adminFoodList">
-            <div class="ld" style="padding:20px;"><div class="sp"></div></div>
-          </div>
+          <div style="padding:20px 20px 0;margin-bottom:10px;"><div class="card-title" style="padding:0">Itens cadastrados</div></div>
+          <div id="adminFoodList"><div class="ld" style="padding:20px;"><div class="sp"></div></div></div>
         </div>
       </div>
 
-      <!-- PAGAMENTOS -->
       <div class="asec" id="asPag">
         <div class="sl">Aguardando confirmação</div>
         <div id="payPend"><div class="ld"><div class="sp"></div></div></div>
@@ -593,47 +382,33 @@ a{text-decoration:none;}
         <div id="payConf"><div class="ld"><div class="sp"></div></div></div>
       </div>
 
-      <!-- RESUMO -->
       <div class="asec" id="asResumo">
         <div id="summaryContent"><div class="ld"><div class="sp"></div>Carregando resumo...</div></div>
       </div>
-
-    </div><!-- /adminPanel -->
-  </div><!-- /pg-admin -->
+    </div>
+  </div>
 
 </div><!-- /wrap -->
 
-<!-- ── MODAL DE RESERVA ── -->
+<!-- MODAL -->
 <div class="mo" id="modal">
   <div class="mdl">
-
-    <!-- STEP 1: dados do casal -->
     <div class="step on" id="st1">
       <div class="mdl-title">Reservar item</div>
       <p class="mdl-sub">Dados do casal</p>
-      <div class="sel-box" id="selBox">
+      <div class="sel-box">
         <div class="sel-icon" id="selIcon">🍽</div>
-        <div>
-          <div class="sel-name" id="selName">—</div>
-          <div class="sel-type" id="selType">—</div>
-        </div>
+        <div><div class="sel-name" id="selName">—</div><div class="sel-type" id="selType">—</div></div>
       </div>
-      <div class="fg"><label>Nome da pessoa 1</label>
-        <input id="gP1" placeholder="João Silva"
-               onkeydown="if(event.key==='Enter')document.getElementById('gP2').focus()"></div>
-      <div class="fg"><label>Nome da pessoa 2</label>
-        <input id="gP2" placeholder="Maria Silva"
-               onkeydown="if(event.key==='Enter')document.getElementById('gPhone').focus()"></div>
-      <div class="fg"><label>WhatsApp (DDD + número, sem 55)</label>
-        <input type="tel" id="gPhone" placeholder="21999999999"
-               onkeydown="if(event.key==='Enter')goSt2()"></div>
+      <div class="fg"><label>Nome da pessoa 1</label><input id="gP1" placeholder="João Silva" onkeydown="if(event.key==='Enter')document.getElementById('gP2').focus()"></div>
+      <div class="fg"><label>Nome da pessoa 2</label><input id="gP2" placeholder="Maria Silva" onkeydown="if(event.key==='Enter')document.getElementById('gPhone').focus()"></div>
+      <div class="fg"><label>WhatsApp (DDD + número, sem 55)</label><input type="tel" id="gPhone" placeholder="21999999999" onkeydown="if(event.key==='Enter')goSt2()"></div>
       <div class="btn-row">
         <button class="btn btn-ol" onclick="closeModal()">Cancelar</button>
         <button class="btn btn-dark" id="btnSt2" onclick="goSt2()">Continuar →</button>
       </div>
     </div>
 
-    <!-- STEP 2: PIX -->
     <div class="step" id="st2">
       <div class="mdl-title">Pagamento</div>
       <p class="mdl-sub">Realize o pagamento via PIX</p>
@@ -646,73 +421,51 @@ a{text-decoration:none;}
         <div class="pix-own" id="pixOwn">—</div>
         <button class="copy-btn" onclick="copyPix()">📋 Copiar chave</button>
       </div>
-      <div class="notice n-info">ℹ️ Após realizar o pagamento, clique em <strong>Já paguei</strong> para registrar sua reserva.</div>
+      <div class="notice n-info">ℹ️ Após pagar, clique em <strong>Já paguei</strong> para registrar sua reserva.</div>
       <div class="btn-row">
         <button class="btn btn-ol" onclick="showSt('st1')">← Voltar</button>
         <button class="btn btn-gold" id="btnSt3" onclick="goSt3()">Já paguei ✓</button>
       </div>
     </div>
 
-    <!-- STEP 3: sucesso -->
     <div class="step" id="st3">
       <div class="tc">
         <div class="sico">🎉</div>
         <div class="mdl-title">Reserva registrada!</div>
         <p class="mdl-sub">Quase lá...</p>
-        <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:4px;">
-          Envie o comprovante do PIX para o administrador confirmar sua participação no evento.
-        </p>
+        <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:4px;">Envie o comprovante do PIX para o administrador confirmar sua participação.</p>
         <a id="waLink" href="#" target="_blank" class="wa-btn">
           <svg width="19" height="19" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Enviar comprovante
         </a>
-        <div style="margin-top:18px;">
-          <button class="btn btn-ol btn-sm" onclick="closeModal()">Fechar</button>
-        </div>
+        <div style="margin-top:18px;"><button class="btn btn-ol btn-sm" onclick="closeModal()">Fechar</button></div>
       </div>
     </div>
-
   </div>
-</div>
-
-
-<!-- PWA Install Popup -->
-<div class="pwa-overlay" id="pwaOverlay" onclick="dismissPWA()"></div>
-<div class="pwa-popup" id="pwaPopup">
-  <button class="pwa-x" onclick="dismissPWA()" aria-label="Fechar">✕</button>
-  <div class="pwa-logo">🥂</div>
-  <h3 class="pwa-title">Instalar o app</h3>
-  <p class="pwa-desc">Adicione o Jantar dos Casais à sua tela inicial e acesse com um toque, mesmo sem internet.</p>
-  <div class="pwa-steps" id="pwaSteps"></div>
-  <button class="pwa-install-btn" id="pwaInstallBtn" onclick="installPWA()">Instalar agora</button>
-  <button class="pwa-skip" onclick="dismissPWA()">Agora não</button>
 </div>
 
 <div id="toast"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 <script>
 // ════════════════════════════════════════════════════════════
 //  ⚙️  CONFIGURE AQUI
 // ════════════════════════════════════════════════════════════
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbzYVzI8yHRpNK-TnHJlw8YXGmj3kWmYlI7OhUB9mXA3gZq0FExMDpe157kCbgNdk13-/exec';
-const POLL_MS   = 8000;   // intervalo de atualização (ms)
+const POLL_MS   = 8000;
 
-// ── Estado ───────────────────────────────────────────────────
 const S = {
   event:null, pix:null, foods:[], reservations:[],
   selFood:null, guest:null,
   adminLogged:false, mock:false, timer:null,
-  filter:'all',
-  importItems:[],
+  filter:'all', importItems:[],
 };
 
 // ════════════════════════════════════════════════════════════
-//  API — tudo via GET (evita CORS do Apps Script)
+//  API — tudo via GET
 // ════════════════════════════════════════════════════════════
 async function api(action, data) {
   const pl  = data ? encodeURIComponent(JSON.stringify(data)) : '%7B%7D';
-  const res = await fetch(`${SHEET_URL}?action=${action}&payload=${pl}`, { cache:'no-store' });
+  const res = await fetch(`${SHEET_URL}?action=${action}&payload=${pl}`,{cache:'no-store'});
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
@@ -723,85 +476,58 @@ async function api(action, data) {
 async function init() {
   if (SHEET_URL.includes('SEU_ID_AQUI')) {
     document.getElementById('cfgBanner').classList.add('on');
-    setSync('Modo demonstração', false);
-    S.mock = true; loadMock(); return;
+    setSync('Modo demonstração',false);
+    S.mock=true; loadMock(); return;
   }
   await loadAll();
   startPoll();
 }
 
 async function loadAll() {
-  setSync('Conectando...', true);
+  setSync('Conectando...',true);
   try {
-    const [cR, fR, rR] = await Promise.all([
-      api('getConfig'), api('getFoods'), api('getReservations'),
-    ]);
-    if (cR.ok) { S.event = cR.event; S.pix = cR.pix; }
-    if (fR.ok) S.foods = fR.foods;
-    if (rR.ok) S.reservations = rR.reservations;
+    const [cR,fR,rR]=await Promise.all([api('getConfig'),api('getFoods'),api('getReservations')]);
+    if(cR.ok){S.event=cR.event;S.pix=cR.pix;}
+    if(fR.ok) S.foods=fR.foods;
+    if(rR.ok) S.reservations=rR.reservations;
     syncOk(); renderAll();
-  } catch(e) {
-    setSync('Erro de conexão — verifique o SHEET_URL', false);
-    console.error(e);
-  }
+  } catch(e){setSync('Erro de conexão — verifique o SHEET_URL',false);console.error(e);}
 }
 
-function startPoll() {
-  clearInterval(S.timer);
-  S.timer = setInterval(poll, POLL_MS);
-}
+function startPoll(){clearInterval(S.timer);S.timer=setInterval(poll,POLL_MS);}
 
 async function poll() {
-  if (S.mock) return;
+  if(S.mock) return;
   try {
-    const [fR, rR] = await Promise.all([api('getFoods'), api('getReservations')]);
-    if (fR.ok) {
-      const prev = JSON.stringify(S.foods);
-      S.foods = fR.foods;
-      if (JSON.stringify(S.foods) !== prev) { renderFoodList(); renderHeader(); }
-    }
-    if (rR.ok) {
-      S.reservations = rR.reservations;
-      if (S.adminLogged) { renderAdminFoodList(); renderPayments(); }
-    }
+    const [fR,rR]=await Promise.all([api('getFoods'),api('getReservations')]);
+    if(fR.ok){const prev=JSON.stringify(S.foods);S.foods=fR.foods;if(JSON.stringify(S.foods)!==prev){renderFoodList();renderHeader();}}
+    if(rR.ok){S.reservations=rR.reservations;if(S.adminLogged){renderAdminFoodList();renderPayments();}}
     syncOk();
-  } catch(e) { setSync('Aguardando conexão...', false); }
+  } catch(e){setSync('Aguardando conexão...',false);}
 }
 
-function syncOk() {
-  const t = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  setSync(`Atualizado às ${t}`, false);
-}
-function setSync(msg, loading) {
-  document.getElementById('syncMsg').textContent = msg;
-  document.getElementById('syncDot').classList.toggle('active', loading);
-}
+function syncOk(){const t=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});setSync(`Atualizado às ${t}`,false);}
+function setSync(msg,loading){document.getElementById('syncMsg').textContent=msg;document.getElementById('syncDot').classList.toggle('active',loading);}
 
 // ════════════════════════════════════════════════════════════
 //  MOCK
 // ════════════════════════════════════════════════════════════
 function loadMock() {
-  S.event = {
-    title:'Jantar dos Casais', date:'2025-12-20', time:'20:00',
-    local:'Salão de Festas — Edifício Aurora, Rua das Flores 123',
-    valor:'120', desc:'Uma noite especial entre amigos e casais, com boa comida e muita alegria.',
-    whatsapp:'21999999999', senha:'admin123',
-  };
-  S.pix = {key:'11999999999', name:'João Organizador', bank:'Nubank'};
-  S.foods = [
-    {id:'1',name:'Lasanha de Frango',  type:'Salgado', status:'free',     person1:'',        person2:'',       phone:''},
-    {id:'2',name:'Mousse de Maracujá', type:'Doce',    status:'reserved', person1:'Ana',     person2:'Carlos', phone:'21988880001'},
-    {id:'3',name:'Salada Caesar',      type:'Salgado', status:'confirmed',person1:'Bia',     person2:'Paulo',  phone:'21988880002'},
-    {id:'4',name:'Bolo de Chocolate',  type:'Doce',    status:'free',     person1:'',        person2:'',       phone:''},
-    {id:'5',name:'Coxinhas (30 un)',   type:'Salgado', status:'free',     person1:'',        person2:'',       phone:''},
-    {id:'6',name:'Pudim de Leite',     type:'Doce',    status:'free',     person1:'',        person2:'',       phone:''},
-    {id:'7',name:'Refrigerante 2L',    type:'Bebida',  status:'free',     person1:'',        person2:'',       phone:''},
-    {id:'8',name:'Suco Natural 1L',    type:'Bebida',  status:'reserved', person1:'Lúcia',   person2:'Marcos', phone:'21988880003'},
+  S.event={title:'Jantar dos Casais',date:'2025-12-20',time:'20:00',
+    local:'Salão de Festas — Edifício Aurora',valor:'120',
+    desc:'Uma noite especial entre amigos e casais.',whatsapp:'21999999999',senha:'admin123'};
+  S.pix={key:'11999999999',name:'João Organizador',bank:'Nubank'};
+  S.foods=[
+    {id:'1',name:'Lasanha de Frango',  type:'Salgado',status:'free',     person1:'',      person2:'',      phone:''},
+    {id:'2',name:'Mousse de Maracujá', type:'Doce',   status:'reserved', person1:'Ana',   person2:'Carlos',phone:'21988880001'},
+    {id:'3',name:'Salada Caesar',      type:'Salgado',status:'confirmed',person1:'Bia',   person2:'Paulo', phone:'21988880002'},
+    {id:'4',name:'Bolo de Chocolate',  type:'Doce',   status:'free',     person1:'',      person2:'',      phone:''},
+    {id:'5',name:'Coxinhas (30 un)',   type:'Salgado',status:'free',     person1:'',      person2:'',      phone:''},
+    {id:'6',name:'Refrigerante 2L',    type:'Bebida', status:'free',     person1:'',      person2:'',      phone:''},
   ];
-  S.reservations = [
-    {id:'R1',person1:'Ana',  person2:'Carlos',phone:'21988880001',foodId:'2',foodName:'Mousse de Maracujá',status:'pending',  valor:'120',ts:new Date().toISOString()},
-    {id:'R2',person1:'Bia',  person2:'Paulo', phone:'21988880002',foodId:'3',foodName:'Salada Caesar',     status:'confirmed',valor:'120',ts:new Date().toISOString()},
-    {id:'R3',person1:'Lúcia',person2:'Marcos',phone:'21988880003',foodId:'8',foodName:'Suco Natural 1L',  status:'pending',  valor:'120',ts:new Date().toISOString()},
+  S.reservations=[
+    {id:'R1',person1:'Ana', person2:'Carlos',phone:'21988880001',foodId:'2',foodName:'Mousse de Maracujá',status:'pending',  valor:'120',ts:new Date().toISOString()},
+    {id:'R2',person1:'Bia', person2:'Paulo', phone:'21988880002',foodId:'3',foodName:'Salada Caesar',     status:'confirmed',valor:'120',ts:new Date().toISOString()},
   ];
   renderAll();
 }
@@ -809,416 +535,321 @@ function loadMock() {
 // ════════════════════════════════════════════════════════════
 //  RENDER
 // ════════════════════════════════════════════════════════════
-function renderAll() { renderHeader(); renderHome(); renderFoodList(); }
+function renderAll(){renderHeader();renderHome();renderFoodList();}
 
 function renderHeader() {
-  const ev = S.event; if (!ev) return;
-  document.getElementById('hTitle').textContent = ev.title || 'Jantar dos Casais';
-  document.title = ev.title || 'Jantar dos Casais';
-  const d = fmtDate(ev.date);
-  const parts = [d, fmtTime(ev.time)||ev.time, ev.local].filter(Boolean).filter(x=>x&&x!=='—');
-  document.getElementById('hSub').textContent = parts.join(' • ');
-  const free = S.foods.filter(f => f.status==='free').length;
-  document.getElementById('hSpots').textContent = `${free} de ${S.foods.length} itens disponíveis`;
+  const ev=S.event; if(!ev) return;
+  document.getElementById('hTitle').textContent=ev.title||'Jantar dos Casais';
+  document.title=ev.title||'Jantar dos Casais';
+  const d=fmtDate(ev.date), t=fmtTime(ev.time);
+  const parts=[d,t,ev.local].filter(x=>x&&x!=='—');
+  document.getElementById('hSub').textContent=parts.join(' • ');
+  const free=S.foods.filter(f=>f.status==='free').length;
+  document.getElementById('hSpots').textContent=`${free} de ${S.foods.length} itens disponíveis`;
 }
 
 function renderHome() {
-  const ev = S.event, el = document.getElementById('homeContent');
-  if (!ev) { el.innerHTML='<div class="es">Nenhum evento configurado ainda.</div>'; return; }
-  const d = fmtDate(ev.date);
-  el.innerHTML = `
+  const ev=S.event, el=document.getElementById('homeContent');
+  if(!ev){el.innerHTML='<div class="es">Nenhum evento configurado ainda.</div>';return;}
+  const d=fmtDate(ev.date), t=fmtTime(ev.time);
+  el.innerHTML=`
     <div class="eib">
       <div class="ei"><div class="ei-l">Data</div><div class="ei-v">${d}</div></div>
-      <div class="ei"><div class="ei-l">Horário</div><div class="ei-v">${fmtTime(ev.time)||ev.time||'—'}</div></div>
+      <div class="ei"><div class="ei-l">Horário</div><div class="ei-v">${t||'—'}</div></div>
       <div class="ei"><div class="ei-l">Por casal</div><div class="ei-v gold">R$ ${fmtMoney(ev.valor)}</div></div>
     </div>
     ${ev.local?`<div class="card"><div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">📍 Local</div><div style="font-family:'Playfair Display',serif;font-size:1.05rem;">${ev.local}</div></div>`:''}
     ${ev.desc?`<div class="card"><p style="color:var(--muted);line-height:1.7;font-size:14px;">${ev.desc}</p></div>`:''}
     <div class="card" style="text-align:center;padding:32px;">
-      <div style="font-size:32px;margin-bottom:12px;">🥂</div>
+      <div style="font-size:36px;margin-bottom:12px;">💍</div>
       <div style="font-family:'Playfair Display',serif;font-size:1.45rem;font-style:italic;color:var(--brown);margin-bottom:8px;">Escolha seu item</div>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">Cada casal traz um prato doce ou salgado<br>além do valor do ingresso</p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">Cada casal traz um prato doce ou salgado além do valor do ingresso</p>
       <button class="btn btn-dark" onclick="goTab('lista',document.querySelectorAll('.nav-btn')[1])">Ver lista de itens →</button>
     </div>`;
 }
 
-// ── Filtros ──────────────────────────────────────────────────
-function setFilter(f, el) {
-  S.filter = f;
-  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  renderFoodList();
-}
+const EM={Salgado:'🧆',Doce:'🍮',Bebida:'🥤',Outro:'✨'};
+const ORDER=['Salgado','Doce','Bebida','Outro'];
 
-function applyFilter(foods) {
-  return foods.filter(f => {
-    if (S.filter === 'all')   return true;
-    if (S.filter === 'free')  return f.status === 'free';
-    if (S.filter === 'taken') return f.status !== 'free';
-    return f.type === S.filter;
+function setFilter(f,el){S.filter=f;document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderFoodList();}
+
+function applyFilter(foods){
+  return foods.filter(f=>{
+    if(S.filter==='all')   return true;
+    if(S.filter==='free')  return f.status==='free';
+    if(S.filter==='taken') return f.status!=='free';
+    return f.type===S.filter;
   });
 }
 
-// ── Agrupamento por categoria ────────────────────────────────
-const EM   = {Salgado:'🧆', Doce:'🍮', Bebida:'🥤', Outro:'✨'};
-const ORDER = ['Salgado','Doce','Bebida','Outro'];
-
 function renderFoodList() {
-  const el     = document.getElementById('foodList');
-  const foods  = applyFilter(S.foods);
-  if (!S.foods.length) { el.innerHTML='<div class="es">Nenhum item cadastrado ainda.</div>'; return; }
-  if (!foods.length)   { el.innerHTML='<div class="es">Nenhum item corresponde ao filtro selecionado.</div>'; return; }
-
-  // Agrupa por tipo
-  const groups = {};
-  ORDER.forEach(t => groups[t] = []);
-  foods.forEach(f => { const t = f.type||'Outro'; if (!groups[t]) groups[t]=[]; groups[t].push(f); });
-
-  let html = '';
-  ORDER.forEach(type => {
-    if (!groups[type] || !groups[type].length) return;
-    html += `<div class="food-group">
+  const el=document.getElementById('foodList');
+  const foods=applyFilter(S.foods);
+  if(!S.foods.length){el.innerHTML='<div class="es">Nenhum item cadastrado ainda.</div>';return;}
+  if(!foods.length){el.innerHTML='<div class="es">Nenhum item corresponde ao filtro.</div>';return;}
+  const groups={};
+  ORDER.forEach(t=>groups[t]=[]);
+  foods.forEach(f=>{const t=f.type||'Outro';if(!groups[t])groups[t]=[];groups[t].push(f);});
+  let html='';
+  ORDER.forEach(type=>{
+    if(!groups[type]||!groups[type].length) return;
+    html+=`<div class="food-group">
       <div class="food-group-title">${EM[type]||'✨'} ${type}s <span style="font-size:12px;color:var(--muted);font-family:'Inter',sans-serif;font-style:normal;">(${groups[type].length})</span></div>
       <div class="food-grid">${groups[type].map(foodCard).join('')}</div>
     </div>`;
   });
-  el.innerHTML = html;
+  el.innerHTML=html;
 }
 
-function foodCard(f) {
-  const free = f.status==='free', conf = f.status==='confirmed';
-  const cls  = free ? 'free' : conf ? 'confirmed' : 'taken';
-  const slbl = free ? 'Disponível' : conf ? 'Confirmado ✓' : 'Reservado';
-  const sub  = free ? 'Clique para reservar' : [f.person1,f.person2].filter(Boolean).join(' & ');
+function foodCard(f){
+  const free=f.status==='free',conf=f.status==='confirmed';
+  const cls=free?'free':conf?'confirmed':'taken';
+  const slbl=free?'Disponível':conf?'Confirmado ✓':'Reservado';
+  const sub=free?'Clique para reservar':[f.person1,f.person2].filter(Boolean).join(' & ');
   return `<div class="fi ${cls}" ${free?`onclick="openReserve('${f.id}')"`:''}
     title="${free?'Clique para reservar':sub}">
-    <div class="fi-left">
-      <div class="fi-name">${f.name}</div>
-      <div class="fi-sub">${sub}</div>
-    </div>
+    <div class="fi-left"><div class="fi-name">${f.name}</div><div class="fi-sub">${sub}</div></div>
     <span class="badge ${cls}">${slbl}</span>
   </div>`;
 }
 
 // ════════════════════════════════════════════════════════════
-//  RESERVA — 3 steps
+//  RESERVA
 // ════════════════════════════════════════════════════════════
-function openReserve(id) {
-  const food = S.foods.find(f => f.id===id);
-  if (!food || food.status!=='free') { toast('Este item já foi reservado','err'); return; }
-  S.selFood = food;
-  document.getElementById('selIcon').textContent = EM[food.type]||'🍽';
-  document.getElementById('selName').textContent = food.name;
-  document.getElementById('selType').textContent = food.type;
-  document.getElementById('gP1').value   = '';
-  document.getElementById('gP2').value   = '';
-  document.getElementById('gPhone').value= '';
+function openReserve(id){
+  const food=S.foods.find(f=>f.id===id);
+  if(!food||food.status!=='free'){toast('Este item já foi reservado','err');return;}
+  S.selFood=food;
+  document.getElementById('selIcon').textContent=EM[food.type]||'🍽';
+  document.getElementById('selName').textContent=food.name;
+  document.getElementById('selType').textContent=food.type;
+  document.getElementById('gP1').value='';
+  document.getElementById('gP2').value='';
+  document.getElementById('gPhone').value='';
   showSt('st1');
   document.getElementById('modal').classList.add('on');
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.remove('on');
-  S.selFood = null; S.guest = null;
-}
+function closeModal(){document.getElementById('modal').classList.remove('on');S.selFood=null;S.guest=null;}
+function showSt(id){document.querySelectorAll('.step').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');}
 
-function showSt(id) {
-  document.querySelectorAll('.step').forEach(s => s.classList.remove('on'));
-  document.getElementById(id).classList.add('on');
-}
-
-async function goSt2() {
-  const p1    = document.getElementById('gP1').value.trim();
-  const p2    = document.getElementById('gP2').value.trim();
-  const phone = document.getElementById('gPhone').value.replace(/\D/g,'');
-  if (!p1)            { toast('Informe o nome da pessoa 1');             return; }
-  if (!p2)            { toast('Informe o nome da pessoa 2');             return; }
-  if (phone.length < 10) { toast('WhatsApp inválido — DDD + número');   return; }
-  S.guest = { p1, p2, phone };
-
-  const btn = document.getElementById('btnSt2');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Verificando...';
-
-  // Verifica disponibilidade em tempo real
-  if (!S.mock) {
-    try {
-      const r = await api('getFoods');
-      if (r.ok) S.foods = r.foods;
-      const food = S.foods.find(f => f.id===S.selFood.id);
-      if (!food || food.status!=='free') {
-        toast('⚠️ Item reservado por outra pessoa agora!','err');
-        btn.disabled=false; btn.innerHTML='Continuar →';
-        renderFoodList(); renderHeader(); closeModal(); return;
-      }
-    } catch(e) { /* segue offline */ }
+async function goSt2(){
+  const p1=document.getElementById('gP1').value.trim();
+  const p2=document.getElementById('gP2').value.trim();
+  const phone=document.getElementById('gPhone').value.replace(/\D/g,'');
+  if(!p1){toast('Informe o nome da pessoa 1');return;}
+  if(!p2){toast('Informe o nome da pessoa 2');return;}
+  if(phone.length<10){toast('WhatsApp inválido — DDD + número');return;}
+  S.guest={p1,p2,phone};
+  const btn=document.getElementById('btnSt2');
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Verificando...';
+  if(!S.mock){
+    try{
+      const r=await api('getFoods');if(r.ok)S.foods=r.foods;
+      const food=S.foods.find(f=>f.id===S.selFood.id);
+      if(!food||food.status!=='free'){toast('⚠️ Item reservado por outra pessoa agora!','err');btn.disabled=false;btn.innerHTML='Continuar →';renderFoodList();renderHeader();closeModal();return;}
+    }catch(e){}
   }
-
-  // Monta PIX
-  const pix = S.pix||{}, val = Number(S.event?.valor||0);
-  document.getElementById('pixAmt').textContent = `R$ ${val.toFixed(2)}`;
-  document.getElementById('pixKey').textContent = pix.key||'—';
-  document.getElementById('pixOwn').textContent = `${pix.name||'—'}${pix.bank?' • '+pix.bank:''}`;
-
-  const qrDiv = document.getElementById('qrw');
-  qrDiv.innerHTML = '';
-  if (pix.key) {
-    try {
-      new QRCode(qrDiv,{text:pix.key,width:154,height:154,
-        colorDark:'#1C1208',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M});
-    } catch(e){}
-  }
-
-  btn.disabled=false; btn.innerHTML='Continuar →';
+  const pix=S.pix||{},val=Number(S.event?.valor||0);
+  document.getElementById('pixAmt').textContent=`R$ ${val.toFixed(2)}`;
+  document.getElementById('pixKey').textContent=pix.key||'—';
+  document.getElementById('pixOwn').textContent=`${pix.name||'—'}${pix.bank?' • '+pix.bank:''}`;
+  const qrDiv=document.getElementById('qrw');qrDiv.innerHTML='';
+  if(pix.key){try{new QRCode(qrDiv,{text:pix.key,width:154,height:154,colorDark:'#1C1208',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M});}catch(e){}}
+  btn.disabled=false;btn.innerHTML='Continuar →';
   showSt('st2');
 }
 
-async function goSt3() {
-  if (!S.selFood || !S.guest) return;
-  const btn = document.getElementById('btnSt3');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Registrando...';
-
-  if (!S.mock) {
-    try {
-      const r = await api('reserveFood', {
-        foodId:   S.selFood.id,
-        foodName: S.selFood.name,
-        person1:  S.guest.p1,
-        person2:  S.guest.p2,
-        phone:    S.guest.phone,
-      });
-      if (!r.ok) {
-        const msg = r.conflict
-          ? `⚠️ ${r.takenBy||'Alguém'} acabou de reservar este item!`
-          : 'Erro: ' + (r.error||'tente novamente');
-        toast(msg,'err');
-        btn.disabled=false; btn.innerHTML='Já paguei ✓';
-        await poll(); renderFoodList(); closeModal(); return;
+async function goSt3(){
+  if(!S.selFood||!S.guest) return;
+  const btn=document.getElementById('btnSt3');
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Registrando...';
+  if(!S.mock){
+    try{
+      const r=await api('reserveFood',{foodId:S.selFood.id,foodName:S.selFood.name,person1:S.guest.p1,person2:S.guest.p2,phone:S.guest.phone});
+      if(!r.ok){
+        const msg=r.conflict?`⚠️ ${r.takenBy||'Alguém'} acabou de reservar este item!`:'Erro: '+(r.error||'tente novamente');
+        toast(msg,'err');btn.disabled=false;btn.innerHTML='Já paguei ✓';await poll();renderFoodList();closeModal();return;
       }
-    } catch(e) {
-      toast('Erro de conexão','err');
-      btn.disabled=false; btn.innerHTML='Já paguei ✓';
-      return;
-    }
+    }catch(e){toast('Erro de conexão','err');btn.disabled=false;btn.innerHTML='Já paguei ✓';return;}
   }
-
-  // Atualização local otimista
-  const food = S.foods.find(f => f.id===S.selFood.id);
-  if (food) { food.status='reserved'; food.person1=S.guest.p1; food.person2=S.guest.p2; food.phone=S.guest.phone; }
-  renderFoodList(); renderHeader();
-
-  // Mensagem WhatsApp para o admin
-  const ev   = S.event||{};
-  const wa   = ev.whatsapp ? '55' + ev.whatsapp : '';
-  const val  = Number(ev.valor||0);
-  const d    = fmtDate(ev.date);
-  const msg  = encodeURIComponent(
-    `Olá! Acabei de reservar um item para o evento ` +
-    `*${ev.title||'Jantar dos Casais'}* 🎉\n\n` +
-    `👫 Casal: *${S.guest.p1}* & *${S.guest.p2}*\n` +
-    `🍽 Prato: *${S.selFood.name}*\n` +
-    `💰 Valor pago: *R$ ${val.toFixed(2)}*\n\n` +
+  const food=S.foods.find(f=>f.id===S.selFood.id);
+  if(food){food.status='reserved';food.person1=S.guest.p1;food.person2=S.guest.p2;food.phone=S.guest.phone;}
+  renderFoodList();renderHeader();
+  const ev=S.event||{},val=Number(ev.valor||0),d=fmtDate(ev.date),t=fmtTime(ev.time);
+  const wa=ev.whatsapp?'55'+ev.whatsapp:'';
+  const msg=encodeURIComponent(
+    `Olá! Acabei de reservar um item para o evento *${ev.title||'Jantar dos Casais'}* 🎉\n\n`+
+    `👫 Casal: *${S.guest.p1}* & *${S.guest.p2}*\n`+
+    `🍽 Prato: *${S.selFood.name}*\n`+
+    `💰 Valor pago: *R$ ${val.toFixed(2)}*\n\n`+
     `Segue o comprovante do PIX em anexo.`
   );
-  document.getElementById('waLink').href = wa
-    ? `https://wa.me/${wa}?text=${msg}`
-    : `https://wa.me/?text=${msg}`;
-
-  btn.disabled=false; btn.innerHTML='Já paguei ✓';
+  document.getElementById('waLink').href=wa?`https://wa.me/${wa}?text=${msg}`:`https://wa.me/?text=${msg}`;
+  btn.disabled=false;btn.innerHTML='Já paguei ✓';
   showSt('st3');
 }
 
-function copyPix() {
-  const key = S.pix?.key||''; if (!key) return;
-  navigator.clipboard.writeText(key)
-    .then(()=>toast('Chave PIX copiada! 📋'))
-    .catch(()=>{
-      const t=document.createElement('textarea');t.value=key;
-      document.body.appendChild(t);t.select();document.execCommand('copy');
-      document.body.removeChild(t);toast('Chave PIX copiada! 📋');
-    });
+function copyPix(){
+  const key=S.pix?.key||'';if(!key) return;
+  navigator.clipboard.writeText(key).then(()=>toast('Chave PIX copiada! 📋')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=key;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Chave PIX copiada! 📋');
+  });
 }
 
 // ════════════════════════════════════════════════════════════
 //  ADMIN
 // ════════════════════════════════════════════════════════════
-function doLogin() {
-  const val = document.getElementById('adminPass').value;
-  if (val === (S.event?.senha||'admin123')) {
+function doLogin(){
+  const val=document.getElementById('adminPass').value;
+  if(val===(S.event?.senha||'admin123')){
     S.adminLogged=true;
     document.getElementById('adminLock').style.display='none';
     document.getElementById('adminPanel').style.display='block';
-    fillAdminForm(); renderAdminFoodList(); renderPayments();
-  } else {
-    toast('Senha incorreta','err');
-    document.getElementById('adminPass').select();
-  }
+    fillAdminForm();renderAdminFoodList();renderPayments();
+  }else{toast('Senha incorreta','err');document.getElementById('adminPass').select();}
 }
 
-function fillAdminForm() {
-  const ev=S.event||{}, p=S.pix||{};
-  document.getElementById('cTitle').value  = ev.title    ||'';
-  document.getElementById('cDate').value   = ev.date     ||'';
-  document.getElementById('cTime').value   = fmtTime(ev.time);
-  document.getElementById('cLocal').value  = ev.local    ||'';
-  document.getElementById('cValor').value  = ev.valor    ||'';
-  document.getElementById('cDesc').value   = ev.desc     ||'';
-  document.getElementById('cWa').value     = ev.whatsapp ||'';
-  document.getElementById('cPKey').value   = p.key       ||'';
-  document.getElementById('cPName').value  = p.name      ||'';
-  document.getElementById('cPBank').value  = p.bank      ||'';
+function fillAdminForm(){
+  const ev=S.event||{},p=S.pix||{};
+  document.getElementById('cTitle').value =ev.title    ||'';
+  document.getElementById('cDate').value  =ev.date     ||'';
+  document.getElementById('cTime').value  =fmtTime(ev.time); // ← usa fmtTime para normalizar
+  document.getElementById('cLocal').value =ev.local    ||'';
+  document.getElementById('cValor').value =ev.valor    ||'';
+  document.getElementById('cDesc').value  =ev.desc     ||'';
+  document.getElementById('cWa').value    =ev.whatsapp ||'';
+  document.getElementById('cPKey').value  =p.key       ||'';
+  document.getElementById('cPName').value =p.name      ||'';
+  document.getElementById('cPBank').value =p.bank      ||'';
 }
 
-function goAdminTab(name, el) {
-  document.querySelectorAll('.atb').forEach(t  => t.classList.remove('on'));
-  document.querySelectorAll('.asec').forEach(s => s.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('as'+name).classList.add('on');
-  if (name==='Pag')    poll().then(()=>renderPayments());
-  if (name==='Lista')  renderAdminFoodList();
-  if (name==='Resumo') loadSummary();
+function goAdminTab(name,el){
+  document.querySelectorAll('.atb').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.asec').forEach(s=>s.classList.remove('on'));
+  el.classList.add('on');document.getElementById('as'+name).classList.add('on');
+  if(name==='Pag')    poll().then(()=>renderPayments());
+  if(name==='Lista')  renderAdminFoodList();
+  if(name==='Resumo') loadSummary();
 }
 
-async function saveConfig() {
-  const cfg = {
-    title:    document.getElementById('cTitle').value,
-    date:     document.getElementById('cDate').value,
-    time:     document.getElementById('cTime').value,
-    local:    document.getElementById('cLocal').value,
-    valor:    document.getElementById('cValor').value,
-    desc:     document.getElementById('cDesc').value,
-    whatsapp: document.getElementById('cWa').value,
-  };
-  const np = document.getElementById('cSenha').value;
-  if (np) cfg.senha = np;
-
+async function saveConfig(){
+  const cfg={title:document.getElementById('cTitle').value,date:document.getElementById('cDate').value,
+    time:document.getElementById('cTime').value,local:document.getElementById('cLocal').value,
+    valor:document.getElementById('cValor').value,desc:document.getElementById('cDesc').value,
+    whatsapp:document.getElementById('cWa').value};
+  const np=document.getElementById('cSenha').value;if(np)cfg.senha=np;
   const btn=document.getElementById('btnSaveEvt');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Salvando...';
-  try {
-    if (!S.mock) {
-      const r = await api('saveConfig', cfg);
-      if (!r.ok) { toast('Erro: '+(r.error||'falha'),'err'); return; }
-    }
-    S.event = {...(S.event||{}), ...cfg};
-    renderAll();
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Salvando...';
+  try{
+    if(!S.mock){const r=await api('saveConfig',cfg);if(!r.ok){toast('Erro: '+(r.error||'falha'),'err');return;}}
+    S.event={...(S.event||{}),...cfg};renderAll();
     document.getElementById('cSenha').value='';
     toast('Configurações salvas! ✓','ok');
-  } catch(e) { toast('Erro de conexão','err'); }
-  btn.disabled=false; btn.innerHTML='Salvar configurações';
+  }catch(e){toast('Erro de conexão','err');}
+  btn.disabled=false;btn.innerHTML='Salvar configurações';
 }
 
-async function savePix() {
+async function savePix(){
   const pix={key:document.getElementById('cPKey').value,name:document.getElementById('cPName').value,bank:document.getElementById('cPBank').value};
   const btn=document.getElementById('btnSavePix');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Salvando...';
-  try {
-    if (!S.mock) { const r=await api('savePixConfig',pix); if(!r.ok){toast('Erro ao salvar PIX','err');return;} }
-    S.pix=pix; toast('PIX salvo! ✓','ok');
-  } catch(e){toast('Erro de conexão','err');}
-  btn.disabled=false; btn.innerHTML='Salvar PIX';
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Salvando...';
+  try{
+    if(!S.mock){const r=await api('savePixConfig',pix);if(!r.ok){toast('Erro ao salvar PIX','err');return;}}
+    S.pix=pix;toast('PIX salvo! ✓','ok');
+  }catch(e){toast('Erro de conexão','err');}
+  btn.disabled=false;btn.innerHTML='Salvar PIX';
 }
 
-async function addFood() {
+async function addFood(){
   const name=document.getElementById('nFoodName').value.trim();
   const type=document.getElementById('nFoodType').value;
-  if (!name){toast('Digite o nome do item');return;}
+  if(!name){toast('Digite o nome do item');return;}
   const btn=document.getElementById('btnAddFood');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Adicionando...';
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Adicionando...';
   const id=String(Date.now());
-  try {
-    if (!S.mock){const r=await api('addFood',{id,name,type});if(!r.ok){toast('Erro: '+(r.error||''),'err');return;}}
+  try{
+    if(!S.mock){const r=await api('addFood',{id,name,type});if(!r.ok){toast('Erro: '+(r.error||''),'err');return;}}
     S.foods.push({id,name,type,status:'free',person1:'',person2:'',phone:''});
     document.getElementById('nFoodName').value='';
-    renderFoodList(); renderAdminFoodList(); renderHeader();
-    toast('Item adicionado! ✓','ok');
-  } catch(e){toast('Erro de conexão','err');}
-  btn.disabled=false; btn.innerHTML='Adicionar à lista';
+    renderFoodList();renderAdminFoodList();renderHeader();toast('Item adicionado! ✓','ok');
+  }catch(e){toast('Erro de conexão','err');}
+  btn.disabled=false;btn.innerHTML='Adicionar à lista';
 }
 
-// ── Importação TXT ───────────────────────────────────────────
-function handleFileSelect(e) { processFile(e.target.files[0]); }
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('importArea').classList.remove('over');
-  processFile(e.dataTransfer.files[0]);
-}
-
-function processFile(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    const lines = e.target.result.split(/\r?\n/).filter(l => l.trim());
-    const types = ['Salgado','Doce','Bebida','Outro'];
-    S.importItems = lines.map((line, i) => {
-      const parts = line.split(';');
-      const name  = (parts[0]||'').trim();
-      const raw   = (parts[1]||'').trim();
-      // Normaliza o tipo (aceita variações)
-      const type  = types.find(t => raw.toLowerCase().includes(t.toLowerCase())) || 'Outro';
-      return { name, type, line: i+1, valid: !!name };
-    }).filter(it => it.valid);
-
-    const prev = document.getElementById('importPreview');
-    prev.innerHTML = S.importItems.map(it =>
-      `<div style="padding:2px 0;color:${it.valid?'var(--text)':'var(--err)'}">
-        ${EM[it.type]||'✨'} ${it.name} <span style="color:var(--muted);">(${it.type})</span>
-      </div>`
-    ).join('');
+function handleFileSelect(e){processFile(e.target.files[0]);}
+function handleDrop(e){e.preventDefault();document.getElementById('importArea').classList.remove('over');processFile(e.dataTransfer.files[0]);}
+function processFile(file){
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const types=['Salgado','Doce','Bebida','Outro'];
+    const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
+    S.importItems=lines.map(line=>{
+      const parts=line.split(';');
+      const name=(parts[0]||'').trim();
+      const raw=(parts[1]||'').trim();
+      const type=types.find(t=>raw.toLowerCase().includes(t.toLowerCase()))||'Outro';
+      return{name,type,valid:!!name};
+    }).filter(it=>it.valid);
+    const prev=document.getElementById('importPreview');
+    prev.innerHTML=S.importItems.map(it=>`<div style="padding:2px 0;">${EM[it.type]||'✨'} ${it.name} <span style="color:var(--muted);">(${it.type})</span></div>`).join('');
     prev.classList.add('on');
-    document.getElementById('importActions').style.display = 'flex';
+    document.getElementById('importActions').style.display='flex';
     toast(`${S.importItems.length} itens prontos para importar`);
   };
-  reader.readAsText(file, 'UTF-8');
+  reader.readAsText(file,'UTF-8');
 }
-
-async function importFoods() {
-  if (!S.importItems.length) { toast('Nenhum item para importar'); return; }
+async function importFoods(){
+  if(!S.importItems.length){toast('Nenhum item para importar');return;}
   const btn=document.getElementById('btnImport');
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Importando...';
-  try {
-    const items = S.importItems.map((it,i) => ({...it, id:String(Date.now()+i)}));
-    if (!S.mock) {
-      const r = await api('addFoodsBatch', {items});
-      if (!r.ok) { toast('Erro na importação: '+(r.error||''),'err'); return; }
-    }
-    items.forEach(it => S.foods.push({id:it.id,name:it.name,type:it.type,status:'free',person1:'',person2:'',phone:''}));
-    clearImport();
-    renderFoodList(); renderAdminFoodList(); renderHeader();
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span> Importando...';
+  try{
+    const items=S.importItems.map((it,i)=>({...it,id:String(Date.now()+i)}));
+    if(!S.mock){const r=await api('addFoodsBatch',{items});if(!r.ok){toast('Erro na importação','err');return;}}
+    items.forEach(it=>S.foods.push({id:it.id,name:it.name,type:it.type,status:'free',person1:'',person2:'',phone:''}));
+    clearImport();renderFoodList();renderAdminFoodList();renderHeader();
     toast(`${items.length} itens importados! ✓`,'ok');
-  } catch(e){toast('Erro de conexão','err');}
-  btn.disabled=false; btn.innerHTML='Importar itens';
+  }catch(e){toast('Erro de conexão','err');}
+  btn.disabled=false;btn.innerHTML='Importar itens';
 }
-
-function clearImport() {
-  S.importItems=[];
-  document.getElementById('importFile').value='';
+function clearImport(){
+  S.importItems=[];document.getElementById('importFile').value='';
   document.getElementById('importPreview').classList.remove('on');
   document.getElementById('importPreview').innerHTML='';
   document.getElementById('importActions').style.display='none';
 }
 
-async function removeFood(id) {
-  if (!confirm('Remover este item da lista?')) return;
-  try {
-    if (!S.mock){const r=await api('removeFood',{id});if(!r.ok){toast(r.error||'Não foi possível remover','err');return;}}
+async function removeFood(id){
+  if(!confirm('Remover este item da lista?')) return;
+  try{
+    if(!S.mock){const r=await api('removeFood',{id});if(!r.ok){toast(r.error||'Não foi possível remover','err');return;}}
     S.foods=S.foods.filter(f=>f.id!==id);
-    renderFoodList(); renderAdminFoodList(); renderHeader();
-    toast('Item removido.');
-  } catch(e){toast('Erro de conexão','err');}
+    renderFoodList();renderAdminFoodList();renderHeader();toast('Item removido.');
+  }catch(e){toast('Erro de conexão','err');}
 }
 
-async function releaseRes(resId, foodId) {
-  if (!confirm('Liberar este item (desfazer reserva)?')) return;
-  try {
-    if (!S.mock){const r=await api('releaseFood',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao liberar','err');return;}}
-    const res=S.reservations.find(r=>r.id===resId); if(res) res.status='cancelled';
-    const food=S.foods.find(f=>f.id===foodId);
-    if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
-    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments();
-    toast('Reserva liberada.');
-  } catch(e){toast('Erro de conexão','err');}
+async function releaseRes(resId,foodId){
+  if(!confirm('Liberar este item (desfazer reserva)?')) return;
+  try{
+    if(!S.mock){const r=await api('releaseFood',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao liberar','err');return;}}
+    const res=S.reservations.find(r=>r.id===resId);if(res)res.status='cancelled';
+    const food=S.foods.find(f=>f.id===foodId);if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
+    renderFoodList();renderHeader();renderAdminFoodList();renderPayments();toast('Reserva liberada.');
+  }catch(e){toast('Erro de conexão','err');}
 }
 
-function renderAdminFoodList() {
+async function cancelRes(resId,foodId){
+  if(!confirm('Cancelar esta reserva confirmada? O item voltará a ficar disponível.')) return;
+  try{
+    if(!S.mock){const r=await api('releaseFood',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao cancelar','err');return;}}
+    const res=S.reservations.find(r=>r.id===resId);if(res)res.status='cancelled';
+    const food=S.foods.find(f=>f.id===foodId);if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
+    renderFoodList();renderHeader();renderAdminFoodList();renderPayments();toast('Reserva cancelada — item liberado.','ok');
+  }catch(e){toast('Erro de conexão','err');}
+}
+
+function renderAdminFoodList(){
   const el=document.getElementById('adminFoodList');
   if(!S.foods.length){el.innerHTML='<div class="es" style="padding:22px;">Nenhum item cadastrado.</div>';return;}
   const stM={free:'Disponível',reserved:'Reservado',confirmed:'Confirmado'};
@@ -1228,150 +859,99 @@ function renderAdminFoodList() {
         <div class="afr-name">${EM[f.type]||'✨'} ${f.name}</div>
         <div class="afr-sub">${f.type} • ${stM[f.status]||f.status}${f.person1?' — '+[f.person1,f.person2].filter(Boolean).join(' & '):''}</div>
       </div>
-      ${f.status==='free'
-        ?`<button class="btn btn-err btn-sm" onclick="removeFood('${f.id}')">Remover</button>`
-        :'<span style="font-size:10px;color:var(--muted);">Em uso</span>'}
+      ${f.status==='free'?`<button class="btn btn-err btn-sm" onclick="removeFood('${f.id}')">Remover</button>`:'<span style="font-size:10px;color:var(--muted);">Em uso</span>'}
     </div>`).join('');
 }
 
-function renderPayments() {
-  const all     = (S.reservations||[]).filter(r=>r.status!=='cancelled');
-  const pending = all.filter(r=>r.status==='pending');
-  const confed  = all.filter(r=>r.status==='confirmed');
-
+function renderPayments(){
+  const all=(S.reservations||[]).filter(r=>r.status!=='cancelled');
+  const pending=all.filter(r=>r.status==='pending');
+  const confed=all.filter(r=>r.status==='confirmed');
   const render=(list,elId)=>{
     const el=document.getElementById(elId);
     if(!list.length){el.innerHTML='<div class="es">Nenhum registro.</div>';return;}
     el.innerHTML=list.map(r=>{
       const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
       const ts=r.ts?new Date(r.ts).toLocaleString('pt-BR'):'';
-      const ev=S.event||{};
-      const d=fmtDate(ev.date);
-      const waConfMsg = encodeURIComponent(
-        `Olá *${r.person1}* e *${r.person2}*! 🎉\n\n` +
-        `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
-        `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
-        `📅 Data: *${d}*\n` +
-        `🕐 Horário: *${fmtTime(ev.time)||ev.time||'—'}*\n` +
-        `📍 Local: *${ev.local||'—'}*\n\n` +
-        `👫 Casal: *${casal}*\n` +
-        `🍽 Prato confirmado: *${r.foodName}*\n` +
-        `💰 Valor pago: *R$ ${fmtMoney(r.valor)}*\n\n` +
-        `Mal podemos esperar para te ver lá! 🥂`
+      const ev=S.event||{},d=fmtDate(ev.date),t=fmtTime(ev.time);
+      const waMsg=encodeURIComponent(
+        `Olá *${r.person1||''}* e *${r.person2||''}*! 🎉\n\n`+
+        `✅ Seu pagamento foi *confirmado*:\n\n`+
+        `🎊 *${ev.title||'Jantar dos Casais'}*\n`+
+        `📅 Data: *${d}*\n`+
+        `🕐 Horário: *${t||'—'}*\n`+
+        `📍 Local: *${ev.local||'—'}*\n\n`+
+        `👫 Casal: *${casal}*\n`+
+        `🍽 Prato: *${r.foodName}*\n`+
+        `💰 Valor pago: *R$ ${fmtMoney(r.valor)}*\n\n`+
+        `Mal podemos esperar para te ver lá! 💍`
       );
       const waPhone='55'+(r.phone||'');
       return `<div class="pc">
         <div style="flex:1;">
           <div class="pc-name">${casal}</div>
-          <div class="pc-det">
-            📱 ${r.phone||'—'}<br>
-            🍽 ${r.foodName}<br>
-            💰 R$ ${fmtMoney(r.valor)}
-            ${ts?`<br>🕐 ${ts}`:''}
-          </div>
+          <div class="pc-det">📱 ${r.phone||'—'}<br>🍽 ${r.foodName}<br>💰 R$ ${fmtMoney(r.valor)}${ts?`<br>🕐 ${ts}`:''}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
           <span class="pc-badge ${r.status}">${r.status==='confirmed'?'Confirmado ✓':'Aguardando'}</span>
           <div style="display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;">
-            ${r.status==='pending'?`
-              <button class="btn btn-ok btn-sm" onclick="confirmPay('${r.id}','${r.phone}','${r.foodId}',this)">Confirmar ✓</button>
-              <button class="btn btn-ol btn-sm" onclick="releaseRes('${r.id}','${r.foodId}')">Liberar</button>`:''}
-            ${r.status==='confirmed'?`
-              <button class="btn btn-err btn-sm" onclick="cancelRes('${r.id}','${r.foodId}')">Cancelar</button>`:''}
-            <a href="https://wa.me/${waPhone}?text=${waConfMsg}" target="_blank"
-               class="btn btn-sm" style="background:#25D366;color:#fff;padding:7px 12px;font-size:10px;">WhatsApp</a>
+            ${r.status==='pending'?`<button class="btn btn-ok btn-sm" onclick="confirmPay('${r.id}','${r.phone}','${r.foodId}',this)">Confirmar ✓</button><button class="btn btn-ol btn-sm" onclick="releaseRes('${r.id}','${r.foodId}')">Liberar</button>`:''}
+            ${r.status==='confirmed'?`<button class="btn btn-err btn-sm" onclick="cancelRes('${r.id}','${r.foodId}')">Cancelar</button>`:''}
+            <a href="https://wa.me/${waPhone}?text=${waMsg}" target="_blank" class="btn btn-sm" style="background:#25D366;color:#fff;padding:7px 12px;font-size:10px;">WhatsApp</a>
           </div>
         </div>
       </div>`;
     }).join('');
   };
-
   render(pending,'payPend');
   render(confed,'payConf');
 }
 
-async function cancelRes(resId, foodId) {
-  if (!confirm('Cancelar esta reserva? O item voltará a ficar disponível para outros casais.')) return;
-  try {
-    if (!S.mock){const r=await api('releaseFood',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao cancelar','err');return;}}
-    const res=S.reservations.find(r=>r.id===resId); if(res) res.status='cancelled';
-    const food=S.foods.find(f=>f.id===foodId);
-    if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
-    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments();
-    toast('Reserva cancelada — item liberado.','ok');
-  } catch(e){toast('Erro de conexão','err');}
-}
-
-async function confirmPay(resId, phone, foodId, btn) {
-  btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span>';
-  try {
-    if (!S.mock){const r=await api('confirmPayment',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao confirmar','err');btn.disabled=false;btn.innerHTML='Confirmar ✓';return;}}
-    const res=S.reservations.find(r=>r.id===resId); if(res) res.status='confirmed';
-    const food=S.foods.find(f=>f.id===foodId); if(food) food.status='confirmed';
-    renderFoodList(); renderHeader(); renderPayments();
-    toast('Pagamento confirmado! ✓','ok');
-    const ev=S.event||{}, r=S.reservations.find(r=>r.id===resId)||{};
+async function confirmPay(resId,phone,foodId,btn){
+  btn.disabled=true;btn.innerHTML='<span class="sp-sm"></span>';
+  try{
+    if(!S.mock){const r=await api('confirmPayment',{reservationId:resId,foodId});if(!r.ok){toast('Erro ao confirmar','err');btn.disabled=false;btn.innerHTML='Confirmar ✓';return;}}
+    const res=S.reservations.find(r=>r.id===resId);if(res)res.status='confirmed';
+    const food=S.foods.find(f=>f.id===foodId);if(food)food.status='confirmed';
+    renderFoodList();renderHeader();renderPayments();toast('Pagamento confirmado! ✓','ok');
+    const ev=S.event||{},r=S.reservations.find(r=>r.id===resId)||{};
     const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'';
-    const d=fmtDate(ev.date);
+    const d=fmtDate(ev.date),t=fmtTime(ev.time);
     const msg=encodeURIComponent(
-      `Olá *${r.person1||''}* e *${r.person2||''}*! 🎉\n\n` +
-      `✅ Seu pagamento foi *confirmado* para o evento:\n\n` +
-      `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
-      `📅 Data: *${d}*\n` +
-      `🕐 Horário: *${fmtTime(ev.time)||ev.time||'—'}*\n` +
-      `📍 Local: *${ev.local||'—'}*\n\n` +
-      `👫 Casal: *${casal}*\n` +
-      `🍽 Prato confirmado: *${r.foodName||''}*\n` +
-      `💰 Valor pago: *R$ ${fmtMoney(r.valor)}*\n\n` +
-      `Mal podemos esperar para te ver lá! 🥂`
+      `Olá *${r.person1||''}* e *${r.person2||''}*! 🎉\n\n`+
+      `✅ Seu pagamento foi *confirmado*:\n\n`+
+      `🎊 *${ev.title||'Jantar dos Casais'}*\n`+
+      `📅 Data: *${d}*\n🕐 Horário: *${t||'—'}*\n📍 Local: *${ev.local||'—'}*\n\n`+
+      `👫 Casal: *${casal}*\n🍽 Prato: *${r.foodName||''}*\n💰 Valor pago: *R$ ${fmtMoney(r.valor)}*\n\nMal podemos esperar para te ver lá! 💍`
     );
     window.open(`https://wa.me/55${phone}?text=${msg}`,'_blank');
-  } catch(e){toast('Erro de conexão','err');}
-  btn.disabled=false; btn.innerHTML='Confirmar ✓';
+  }catch(e){toast('Erro de conexão','err');}
+  btn.disabled=false;btn.innerHTML='Confirmar ✓';
 }
 
-async function loadSummary() {
+async function loadSummary(){
   const el=document.getElementById('summaryContent');
   el.innerHTML='<div class="ld"><div class="sp"></div>Calculando...</div>';
-  try {
+  try{
     let d;
-    if (S.mock) {
+    if(S.mock){
       const res=(S.reservations||[]).filter(r=>r.status!=='cancelled');
-      d={
-        totalCasais:res.length, totalPessoas:res.length*2,
+      d={totalCasais:res.length,totalPessoas:res.length*2,
         confirmados:res.filter(r=>r.status==='confirmed').length,
         pendentes:res.filter(r=>r.status==='pending').length,
         arrecadado:res.filter(r=>r.status==='confirmed').reduce((s,r)=>s+Number(r.valor||0),0),
         aConfirmar:res.filter(r=>r.status==='pending').reduce((s,r)=>s+Number(r.valor||0),0),
-        totalItems:S.foods.length,
-        livres:S.foods.filter(f=>f.status==='free').length,
-        reservados:S.foods.filter(f=>f.status!=='free').length,
-      };
-    } else {
-      const r=await api('getSummary'); if(!r.ok) throw new Error(r.error); d=r;
+        totalItems:S.foods.length,livres:S.foods.filter(f=>f.status==='free').length,
+        reservados:S.foods.filter(f=>f.status!=='free').length};
+    }else{
+      const r=await api('getSummary');if(!r.ok)throw new Error(r.error);d=r;
     }
     el.innerHTML=`
       <div class="stats">
-        <div class="stat-card c1">
-          <div class="stat-n gold">${d.totalCasais}</div>
-          <div class="stat-l">Casais inscritos</div>
-          <div class="stat-s">${d.totalPessoas} pessoas no total</div>
-        </div>
-        <div class="stat-card c2">
-          <div class="stat-n ok">R$ ${fmtMoney(d.arrecadado)}</div>
-          <div class="stat-l">Arrecadado (confirmado)</div>
-          <div class="stat-s">+ R$ ${fmtMoney(d.aConfirmar)} pendente</div>
-        </div>
-        <div class="stat-card c3">
-          <div class="stat-n blue">${d.confirmados}</div>
-          <div class="stat-l">Pagamentos confirmados</div>
-          <div class="stat-s">${d.pendentes} aguardando confirmação</div>
-        </div>
-        <div class="stat-card c4">
-          <div class="stat-n warn">${d.livres}</div>
-          <div class="stat-l">Itens disponíveis</div>
-          <div class="stat-s">${d.reservados} de ${d.totalItems} reservados</div>
-        </div>
+        <div class="stat-card c1"><div class="stat-n gold">${d.totalCasais}</div><div class="stat-l">Casais inscritos</div><div class="stat-s">${d.totalPessoas} pessoas no total</div></div>
+        <div class="stat-card c2"><div class="stat-n ok">R$ ${fmtMoney(d.arrecadado)}</div><div class="stat-l">Arrecadado (confirmado)</div><div class="stat-s">+ R$ ${fmtMoney(d.aConfirmar)} pendente</div></div>
+        <div class="stat-card c3"><div class="stat-n blue">${d.confirmados}</div><div class="stat-l">Pagamentos confirmados</div><div class="stat-s">${d.pendentes} aguardando</div></div>
+        <div class="stat-card c4"><div class="stat-n warn">${d.livres}</div><div class="stat-l">Itens disponíveis</div><div class="stat-s">${d.reservados} de ${d.totalItems} reservados</div></div>
       </div>
       <div class="card">
         <div class="card-title">Lista de participantes</div>
@@ -1381,45 +961,33 @@ async function loadSummary() {
       <button class="btn btn-dark" style="width:100%;justify-content:center;gap:8px;margin-top:6px;" onclick="sendResumoWa()">
         📲 Enviar resumo via WhatsApp
       </button>`;
-  } catch(e) {
-    el.innerHTML='<div class="es">Erro ao carregar resumo: '+e.message+'</div>';
-  }
+  }catch(e){el.innerHTML='<div class="es">Erro ao carregar: '+e.message+'</div>';}
 }
 
-function sendResumoWa() {
-  const ev  = S.event||{};
-  const d   = fmtDate(ev.date);
-  const res = (S.reservations||[]).filter(r=>r.status!=='cancelled');
-  const lista = res.map((r,i)=>{
+function sendResumoWa(){
+  const ev=S.event||{},d=fmtDate(ev.date),t=fmtTime(ev.time);
+  const res=(S.reservations||[]).filter(r=>r.status!=='cancelled');
+  const conf=res.filter(r=>r.status==='confirmed');
+  const pend=res.filter(r=>r.status==='pending');
+  const lista=res.map((r,i)=>{
     const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
-    const st = r.status==='confirmed'?'✅':'⏳';
-    return `${i+1}. ${st} ${casal} — ${r.foodName}`;
+    return `${i+1}. ${r.status==='confirmed'?'✅':'⏳'} ${casal} — ${r.foodName}`;
   }).join('\n');
-  const confirmados = res.filter(r=>r.status==='confirmed');
-  const pendentes   = res.filter(r=>r.status==='pending');
-  const arrecadado  = confirmados.reduce((s,r)=>s+Number(r.valor||0),0);
-  const aConfirmar  = pendentes.reduce((s,r)=>s+Number(r.valor||0),0);
-  const msg = encodeURIComponent(
-    `📋 *RESUMO DO EVENTO*\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `🎊 *${ev.title||'Jantar dos Casais'}*\n` +
-    `📅 ${d}  🕐 ${fmtTime(ev.time)||ev.time||'—'}\n` +
-    `📍 ${ev.local||'—'}\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `👫 Casais inscritos: *${res.length}*\n` +
-    `👥 Total de pessoas: *${res.length*2}*\n` +
-    `✅ Confirmados: *${confirmados.length}*\n` +
-    `⏳ Aguardando: *${pendentes.length}*\n` +
-    `💰 Arrecadado: *R$ ${fmtMoney(arrecadado)}*\n` +
-    `💳 Pendente: *R$ ${fmtMoney(aConfirmar)}*\n` +
-    `━━━━━━━━━━━━━━━━━━━━\n` +
-    `🍽 *PARTICIPANTES*\n${lista}`
+  const msg=encodeURIComponent(
+    `📋 *RESUMO DO EVENTO*\n━━━━━━━━━━━━━━━━━━━━\n`+
+    `🎊 *${ev.title||'Jantar dos Casais'}*\n`+
+    `📅 ${d}  🕐 ${t||'—'}\n📍 ${ev.local||'—'}\n━━━━━━━━━━━━━━━━━━━━\n`+
+    `👫 Casais inscritos: *${res.length}*\n👥 Total de pessoas: *${res.length*2}*\n`+
+    `✅ Confirmados: *${conf.length}*\n⏳ Aguardando: *${pend.length}*\n`+
+    `💰 Arrecadado: *R$ ${fmtMoney(conf.reduce((s,r)=>s+Number(r.valor||0),0))}*\n`+
+    `💳 Pendente: *R$ ${fmtMoney(pend.reduce((s,r)=>s+Number(r.valor||0),0))}*\n`+
+    `━━━━━━━━━━━━━━━━━━━━\n🍽 *PARTICIPANTES*\n${lista}`
   );
-  const wa = ev.whatsapp ? '55'+ev.whatsapp : '';
+  const wa=ev.whatsapp?'55'+ev.whatsapp:'';
   window.open(wa?`https://wa.me/${wa}?text=${msg}`:`https://wa.me/?text=${msg}`,'_blank');
 }
 
-function renderParticipantList() {
+function renderParticipantList(){
   const res=(S.reservations||[]).filter(r=>r.status!=='cancelled');
   if(!res.length) return '<div class="es" style="padding:20px;">Nenhum participante ainda.</div>';
   return `<div style="margin-top:4px;">${res.map((r,i)=>`
@@ -1429,79 +997,73 @@ function renderParticipantList() {
         <div style="font-size:11px;color:var(--muted);">🍽 ${r.foodName} · 📱 ${r.phone}</div>
       </div>
       <span class="pc-badge ${r.status}">${r.status==='confirmed'?'Confirmado':'Aguardando'}</span>
-    </div>`).join('')}
-  </div>`;
+    </div>`).join('')}</div>`;
 }
 
 // ════════════════════════════════════════════════════════════
 //  NAV
 // ════════════════════════════════════════════════════════════
-function goTab(tab, el) {
+function goTab(tab,el){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
-  if(el) el.classList.add('on');
+  if(el)el.classList.add('on');
   document.getElementById('pg-'+tab).classList.add('on');
-  if(tab==='lista') poll();
+  if(tab==='lista')poll();
 }
 
 // ════════════════════════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════════════════════════
+// fmtDate: converte qualquer formato do Sheets para data legível (sem bug de fuso)
+function fmtDate(raw){
+  if(!raw||raw===''||raw==='—') return '—';
+  const s=String(raw).trim();
+  if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
+    const[y,m,d]=s.split('-').map(Number);
+    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  }
+  if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){
+    const[d,m,y]=s.split('/').map(Number);
+    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+  }
+  const dt=new Date(s);
+  return isNaN(dt.getTime())?s:dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
+}
 
 // fmtTime: converte qualquer formato de hora do Sheets para HH:MM
-function fmtTime(raw) {
-  if (!raw || raw === '' || raw === '—') return '';
-  const s = String(raw).trim();
+// Sheets armazena hora como fração decimal do dia (ex: 18:30 = 0.770833...)
+// Usa segundos inteiros para evitar arredondamento que causava -1 minuto
+function fmtTime(raw){
+  if(!raw||raw===''||raw==='—') return '';
+  const s=String(raw).trim();
   // Já no formato HH:MM ou HH:MM:SS
-  if (/^\d{2}:\d{2}/.test(s)) return s.slice(0,5);
-  // Sheets retorna hora como objeto Date serializado ex: "Sat Dec 30 1899 19:00:00 GMT..."
-  // ou como número decimal (fração do dia)
-  if (/^\d+\.\d+$/.test(s)) {
-    // número decimal: 0.75 = 18:00
-    const frac = parseFloat(s);
-    const totalMin = Math.round(frac * 24 * 60);
-    const h = Math.floor(totalMin / 60) % 24;
-    const m = totalMin % 60;
-    return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  if(/^\d{1,2}:\d{2}/.test(s)) return s.slice(0,5).padStart(5,'0');
+  // Número decimal (fração do dia que o Sheets retorna)
+  if(/^\d*\.\d+$/.test(s)||/^\d+\.\d*$/.test(s)){
+    const frac=parseFloat(s);
+    // Multiplica por 86400 segundos e usa floor em cada etapa — evita acúmulo de ponto flutuante
+    const totalSec=Math.floor(frac*86400+0.5); // +0.5 para arredondamento seguro
+    const h=Math.floor(totalSec/3600)%24;
+    const m=Math.floor((totalSec%3600)/60);
+    return(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
   }
-  // String de data completa (ex: "Sat Dec 30 1899 20:00:00 GMT-0300")
-  if (s.length > 8) {
-    const dt = new Date(s);
-    if (!isNaN(dt.getTime())) {
-      const h = dt.getHours(), m = dt.getMinutes();
-      return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+  // String de data completa retornada pelo Sheets (ex: "Sat Dec 30 1899 18:30:00 GMT...")
+  if(s.length>8){
+    const dt=new Date(s);
+    if(!isNaN(dt.getTime())){
+      const h=dt.getHours(),m=dt.getMinutes();
+      return(h<10?'0':'')+h+':'+(m<10?'0':'')+m;
     }
   }
   return s;
 }
 
-// fmtDate: converte qualquer formato do Sheets/input para data legível sem bug de fuso
-function fmtDate(raw) {
-  if (!raw || raw==='' || raw==='—') return '—';
-  const s = String(raw).trim();
-  // YYYY-MM-DD (formato do <input type=date> e do Apps Script quando salvo corretamente)
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
-    const [y,m,d] = s.split('-').map(Number);
-    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-  }
-  // DD/MM/YYYY (Sheets às vezes retorna neste formato)
-  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) {
-    const [d,m,y] = s.split('/').map(Number);
-    return new Date(y,m-1,d).toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-  }
-  // Fallback com validação
-  const dt = new Date(s);
-  return isNaN(dt.getTime()) ? s : dt.toLocaleDateString('pt-BR',{day:'2-digit',month:'long',year:'numeric'});
-}
+function fmtMoney(v){return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 
-function fmtMoney(v) {
-  return Number(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
-}
-
-function toast(msg, type) {
+function toast(msg,type){
   const el=document.getElementById('toast');
-  el.textContent=msg; el.className='';
-  if(type) el.classList.add(type);
+  el.textContent=msg;el.className='';
+  if(type)el.classList.add(type);
   el.classList.add('on');
   clearTimeout(el._t);
   el._t=setTimeout(()=>el.classList.remove('on'),3400);
@@ -1509,77 +1071,10 @@ function toast(msg, type) {
 
 document.getElementById('modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
 
-// ════════════════════════════════════════════════════════════
-//  PWA — Popup de instalação
-// ════════════════════════════════════════════════════════════
-let _deferredPrompt = null;
-
-function _isIOS() {
-  return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-}
-function _isInStandalone() {
-  return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
-}
-
-function _showPopup() {
-  if (_isInStandalone()) return; // já instalado
-  if (sessionStorage.getItem('pwaDismissed')) return;
-  const steps = document.getElementById('pwaSteps');
-  const btn   = document.getElementById('pwaInstallBtn');
-  if (_isIOS()) {
-    steps.innerHTML = `
-      <div class="pwa-step"><div class="pwa-step-num">1</div>Toque em <strong>Compartilhar</strong> (ícone de seta para cima) no Safari</div>
-      <div class="pwa-step"><div class="pwa-step-num">2</div>Role e toque em <strong>"Adicionar à Tela de Início"</strong></div>
-      <div class="pwa-step"><div class="pwa-step-num">3</div>Confirme tocando em <strong>Adicionar</strong></div>`;
-    btn.textContent = 'Entendido!';
-  } else {
-    steps.innerHTML = `
-      <div class="pwa-step"><div class="pwa-step-num">1</div>Clique em <strong>Instalar agora</strong> abaixo</div>
-      <div class="pwa-step"><div class="pwa-step-num">2</div>Confirme no diálogo do navegador</div>
-      <div class="pwa-step"><div class="pwa-step-num">3</div>O app aparece na sua tela inicial 🎉</div>`;
-  }
-  document.getElementById('pwaOverlay').classList.add('show');
-  document.getElementById('pwaPopup').classList.add('show');
-}
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  _deferredPrompt = e;
-  setTimeout(_showPopup, 2500);
-});
-
-// iOS não dispara beforeinstallprompt — mostra popup com instruções manuais
-window.addEventListener('load', () => {
-  if (_isIOS() && !_isInStandalone()) {
-    setTimeout(_showPopup, 2500);
-  }
-});
-
-window.addEventListener('appinstalled', () => {
-  dismissPWA();
-  toast('App instalado com sucesso! 🎉','ok');
-});
-
-function installPWA() {
-  if (_isIOS() || !_deferredPrompt) { dismissPWA(); return; }
-  _deferredPrompt.prompt();
-  _deferredPrompt.userChoice.then(() => {
-    _deferredPrompt = null;
-    dismissPWA();
-  });
-}
-
-function dismissPWA() {
-  document.getElementById('pwaOverlay').classList.remove('show');
-  document.getElementById('pwaPopup').classList.remove('show');
-  sessionStorage.setItem('pwaDismissed','1');
-}
-
-// Service Worker para funcionar offline
-if ('serviceWorker' in navigator) {
+// Service Worker (para funcionar offline após instalação via GitHub Pages)
+if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
-
 
 init();
 </script>
