@@ -1,15 +1,15 @@
 // ═══════════════════════════════════════════════════════════════════
-//  JANTAR DOS CASAIS — Google Apps Script Backend v3
+//  JANTAR DOS CASAIS — Google Apps Script Backend v4
 //
 //  COMO PUBLICAR:
 //  1. Planilha → Extensões → Apps Script
 //  2. Cole este código (apague o anterior)
-//  3. Salve → Executar → "setupSheets" (autorize quando pedir)
+//  3. Salvar → Executar → "setupSheets" (autorize quando pedir)
 //  4. Implantar → Nova implantação → Aplicativo da Web
 //     • Executar como: Eu mesmo
 //     • Quem tem acesso: Qualquer pessoa (inclusive anônimos)
 //  5. Copie a URL e cole no index.html (variável SHEET_URL)
-//  ⚠️  Sempre que editar: crie uma NOVA implantação (não edite a antiga)
+//  ⚠️  Sempre que editar: crie uma NOVA implantação
 // ═══════════════════════════════════════════════════════════════════
 
 var TAB_CONFIG = 'Config';
@@ -22,10 +22,10 @@ function resp(obj) {
     .createTextOutput(JSON.stringify(obj))
     .setMimeType(ContentService.MimeType.JSON);
 }
-function ok(extra)  { return resp(Object.assign({ ok: true }, extra || {})); }
-function fail(msg)  { return resp({ ok: false, error: String(msg) }); }
+function ok(extra) { return resp(Object.assign({ ok: true }, extra || {})); }
+function fail(msg) { return resp({ ok: false, error: String(msg) }); }
 
-// ── Roteador (tudo via GET) ──────────────────────────────────────────
+// ── Roteador principal (tudo via GET) ────────────────────────────────
 function doGet(e) {
   try {
     var action  = (e.parameter.action  || '').trim();
@@ -34,21 +34,21 @@ function doGet(e) {
     try { d = JSON.parse(decodeURIComponent(payload)); } catch(_) {}
 
     switch (action) {
-      case 'ping':             return ok({ msg: 'pong' });
-      case 'setupSheets':      return ok(setupSheets());
-      case 'getConfig':        return ok(getConfig());
-      case 'saveConfig':       return ok(saveConfig(d));
-      case 'savePixConfig':    return ok(savePixConfig(d));
-      case 'getFoods':         return ok({ foods: getFoods() });
-      case 'addFood':          return ok(addFood(d));
-      case 'addFoodsBatch':    return ok(addFoodsBatch(d));   // importação txt
-      case 'removeFood':       return ok(removeFood(d));
-      case 'getReservations':  return ok({ reservations: getReservations() });
-      case 'reserveFood':      return ok(reserveFood(d));     // atômico
-      case 'confirmPayment':   return ok(confirmPayment(d));
-      case 'releaseFood':      return ok(releaseFood(d));
-      case 'getSummary':       return ok(getSummary());
-      default:                 return ok({ msg: 'API ok' });
+      case 'ping':              return ok({ msg: 'pong' });
+      case 'setupSheets':       return ok(setupSheets());
+      case 'getConfig':         return ok(getConfig());
+      case 'saveConfig':        return ok(saveConfig(d));
+      case 'savePixConfig':     return ok(savePixConfig(d));
+      case 'getFoods':          return ok({ foods: getFoods() });
+      case 'addFood':           return ok(addFood(d));
+      case 'addFoodsBatch':     return ok(addFoodsBatch(d));
+      case 'removeFood':        return ok(removeFood(d));
+      case 'getReservations':   return ok({ reservations: getReservations() });
+      case 'reserveFoods':      return ok(reserveFoods(d));      // múltiplos itens, atômico
+      case 'confirmPayment':    return ok(confirmPayment(d));
+      case 'releaseReservation':return ok(releaseReservation(d)); // libera todos os itens da reserva
+      case 'getSummary':        return ok(getSummary());
+      default:                  return ok({ msg: 'API ok — ação desconhecida: ' + action });
     }
   } catch(ex) {
     return fail(ex.message);
@@ -56,7 +56,7 @@ function doGet(e) {
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  SETUP
+//  SETUP — cria abas se não existirem
 // ════════════════════════════════════════════════════════════════════
 function setupSheets() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -84,14 +84,15 @@ function setupSheets() {
   // Foods: id | name | type | status | person1 | person2 | phone | timestamp
   ensure(TAB_FOODS, ['id','name','type','status','person1','person2','phone','timestamp']);
 
-  // Reservations: id | foodId | foodName | person1 | person2 | phone | status | valor | timestamp
-  ensure(TAB_RES, ['id','foodId','foodName','person1','person2','phone','status','valor','timestamp']);
+  // Reservations: id | foodIds | foodNames | person1 | person2 | phone | status | valor | timestamp
+  // foodIds e foodNames são listas separadas por vírgula (suporte a múltiplos itens)
+  ensure(TAB_RES, ['id','foodIds','foodNames','person1','person2','phone','status','valor','timestamp']);
 
-  return { msg: 'Planilha configurada!' };
+  return { msg: 'Planilha configurada com sucesso!' };
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  CONFIG  — leitura e escrita campo a campo para evitar perda de dados
+//  CONFIG
 // ════════════════════════════════════════════════════════════════════
 function getConfig() {
   var sh   = sheet(TAB_CONFIG);
@@ -101,14 +102,12 @@ function getConfig() {
     if (!rows[i][0]) continue;
     var key = String(rows[i][0]);
     var val = rows[i][1];
-    // Sheets pode converter campos de data/hora em objetos Date
+    // Sheets converte datas/horas em objetos Date — serializa corretamente
     if (val instanceof Date && !isNaN(val.getTime())) {
       if (key === 'date') {
-        // Campo de data: formata como YYYY-MM-DD
         var dd = val.getDate(), mm = val.getMonth()+1, yy = val.getFullYear();
         val = yy + '-' + (mm<10?'0':'') + mm + '-' + (dd<10?'0':'') + dd;
       } else if (key === 'time') {
-        // Campo de hora: formata como HH:MM
         var hh = val.getHours(), mi = val.getMinutes();
         val = (hh<10?'0':'') + hh + ':' + (mi<10?'0':'') + mi;
       } else {
@@ -139,7 +138,6 @@ function getConfig() {
 }
 
 function saveConfig(d) {
-  // Salva somente os campos enviados — nunca apaga o que não veio
   var map = {};
   if (d.title    !== undefined) map['title']    = d.title;
   if (d.date     !== undefined) map['date']     = d.date;
@@ -166,10 +164,10 @@ function setConfigKeys(map) {
   var sh   = sheet(TAB_CONFIG);
   var rows = sh.getDataRange().getValues();
   Object.keys(map).forEach(function(k) {
-    var val = map[k];
+    if (map[k] === undefined || map[k] === null) return;
     for (var i = 1; i < rows.length; i++) {
       if (String(rows[i][0]) === k) {
-        sh.getRange(i + 1, 2).setValue(val !== undefined && val !== null ? val : '');
+        sh.getRange(i+1, 2).setValue(map[k]);
         break;
       }
     }
@@ -197,19 +195,18 @@ function getFoods() {
 
 function addFood(d) {
   var id = d.id || String(Date.now());
-  sheet(TAB_FOODS).appendRow([id, d.name || '', d.type || 'Outro', 'free', '', '', '', '']);
+  sheet(TAB_FOODS).appendRow([id, d.name||'', d.type||'Outro', 'free', '', '', '', '']);
   return { id: id };
 }
 
-// Importação em lote via txt (array de {name, type})
 function addFoodsBatch(d) {
   var items = d.items || [];
   if (!items.length) return { added: 0 };
   var sh   = sheet(TAB_FOODS);
   var rows = items.map(function(item, i) {
-    return [String(Date.now() + i), item.name || '', item.type || 'Outro', 'free', '', '', '', ''];
+    return [String(Date.now()+i), item.name||'', item.type||'Outro', 'free', '', '', '', ''];
   });
-  sh.getRange(sh.getLastRow() + 1, 1, rows.length, 8).setValues(rows);
+  sh.getRange(sh.getLastRow()+1, 1, rows.length, 8).setValues(rows);
   return { added: rows.length };
 }
 
@@ -218,7 +215,7 @@ function removeFood(d) {
   for (var i = 1; i < rows.length; i++) {
     if (String(rows[i][0]) === String(d.id)) {
       if (String(rows[i][3]) !== 'free') return { removed: false, error: 'Item já reservado — libere primeiro' };
-      sh.deleteRow(i + 1);
+      sh.deleteRow(i+1);
       return { removed: true };
     }
   }
@@ -229,7 +226,9 @@ function setFoodRow(sh, foodId, status, person1, person2, phone) {
   var rows = sh.getDataRange().getValues();
   for (var i = 1; i < rows.length; i++) {
     if (String(rows[i][0]) === String(foodId)) {
-      sh.getRange(i+1, 4, 1, 5).setValues([[status, person1||'', person2||'', phone||'', new Date().toISOString()]]);
+      sh.getRange(i+1, 4, 1, 5).setValues([[
+        status, person1||'', person2||'', phone||'', new Date().toISOString()
+      ]]);
       return true;
     }
   }
@@ -237,35 +236,55 @@ function setFoodRow(sh, foodId, status, person1, person2, phone) {
 }
 
 // ════════════════════════════════════════════════════════════════════
-//  RESERVA ATÔMICA com LockService
+//  RESERVA ATÔMICA — múltiplos itens com LockService
+//  Garante que dois requests simultâneos não reservem o mesmo item
 // ════════════════════════════════════════════════════════════════════
-function reserveFood(d) {
+function reserveFoods(d) {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(10000)) return { ok: false, error: 'Servidor ocupado, tente em instantes.' };
 
   try {
+    var foodIds   = d.foodIds   || [];
+    var foodNames = d.foodNames || [];
     var fsh  = sheet(TAB_FOODS);
     var rows = fsh.getDataRange().getValues();
-    var idx  = -1;
-    for (var i = 1; i < rows.length; i++) {
-      if (String(rows[i][0]) === String(d.foodId)) { idx = i; break; }
+
+    // Verifica todos os itens antes de reservar qualquer um
+    for (var k = 0; k < foodIds.length; k++) {
+      var fid = String(foodIds[k]);
+      var found = false;
+      for (var i = 1; i < rows.length; i++) {
+        if (String(rows[i][0]) === fid) {
+          found = true;
+          if (String(rows[i][3]) !== 'free') {
+            return {
+              ok: false, conflict: true,
+              conflictItem: String(rows[i][1]),
+              error: 'Item "' + rows[i][1] + '" já foi reservado.'
+            };
+          }
+          break;
+        }
+      }
+      if (!found) return { ok: false, error: 'Item ' + fid + ' não encontrado.' };
     }
-    if (idx < 0) return { ok: false, error: 'Item não encontrado.' };
 
-    if (String(rows[idx][3]) !== 'free') {
-      return { ok: false, conflict: true, takenBy: String(rows[idx][4] || ''), error: 'Item já reservado.' };
+    // Todos livres — reserva todos dentro do lock
+    for (var k = 0; k < foodIds.length; k++) {
+      setFoodRow(fsh, foodIds[k], 'reserved', d.person1||'', d.person2||'', d.phone||'');
     }
 
-    // Marca como reservado dentro do lock
-    fsh.getRange(idx+1, 4, 1, 5).setValues([['reserved', d.person1||'', d.person2||'', d.phone||'', new Date().toISOString()]]);
-
-    // Obtém valor do evento para gravar na reserva
+    // Obtém valor do evento
     var cfg   = getConfig();
     var valor = cfg.event.valor || '0';
 
-    var resId = 'R' + Date.now();
+    // Cria UMA reserva com todos os itens
+    var resId     = 'R' + Date.now();
+    var idsStr    = foodIds.join(',');
+    var namesStr  = (Array.isArray(foodNames) ? foodNames : []).join(',');
+
     sheet(TAB_RES).appendRow([
-      resId, d.foodId, d.foodName||'',
+      resId, idsStr, namesStr,
       d.person1||'', d.person2||'', d.phone||'',
       'pending', valor, new Date().toISOString(),
     ]);
@@ -282,16 +301,18 @@ function reserveFood(d) {
 function getReservations() {
   var rows = sheet(TAB_RES).getDataRange().getValues().slice(1);
   return rows.filter(function(r){ return !!r[0]; }).map(function(r){
+    var idsStr   = String(r[1] || '');
+    var namesStr = String(r[2] || '');
     return {
-      id:       String(r[0]),
-      foodId:   String(r[1]),
-      foodName: String(r[2] || ''),
-      person1:  String(r[3] || ''),
-      person2:  String(r[4] || ''),
-      phone:    String(r[5] || ''),
-      status:   String(r[6] || 'pending'),
-      valor:    String(r[7] || '0'),
-      ts:       String(r[8] || ''),
+      id:        String(r[0]),
+      foodIds:   idsStr   ? idsStr.split(',')   : [],
+      foodNames: namesStr,          // string separada por vírgula para exibição
+      person1:   String(r[3] || ''),
+      person2:   String(r[4] || ''),
+      phone:     String(r[5] || ''),
+      status:    String(r[6] || 'pending'),
+      valor:     String(r[7] || '0'),
+      ts:        String(r[8] || ''),
     };
   });
 }
@@ -300,32 +321,57 @@ function confirmPayment(d) {
   var lock = LockService.getScriptLock();
   lock.tryLock(5000);
   try {
-    var rsh = sheet(TAB_RES), rrows = rsh.getDataRange().getValues();
-    var foodId='', p1='', p2='', phone='', valor='0';
+    var rsh   = sheet(TAB_RES);
+    var rrows = rsh.getDataRange().getValues();
+    var foodIds = [], p1 = '', p2 = '', phone = '', valor = '0';
+
     for (var i = 1; i < rrows.length; i++) {
       if (String(rrows[i][0]) === String(d.reservationId)) {
         rsh.getRange(i+1, 7).setValue('confirmed');
-        foodId = String(rrows[i][1]); p1 = String(rrows[i][3]);
-        p2 = String(rrows[i][4]); phone = String(rrows[i][5]); valor = String(rrows[i][7]);
+        var idsStr = String(rrows[i][1] || '');
+        foodIds = idsStr ? idsStr.split(',') : (d.foodIds || []);
+        p1 = String(rrows[i][3]); p2 = String(rrows[i][4]);
+        phone = String(rrows[i][5]); valor = String(rrows[i][7]);
         break;
       }
     }
-    if (foodId) setFoodRow(sheet(TAB_FOODS), foodId, 'confirmed', p1, p2, phone);
+
+    // Atualiza todos os itens para 'confirmed'
+    var fsh = sheet(TAB_FOODS);
+    foodIds.forEach(function(fid) {
+      setFoodRow(fsh, fid.trim(), 'confirmed', p1, p2, phone);
+    });
+
     return { confirmed: true, person1: p1, person2: p2, phone: phone, valor: valor };
   } finally { lock.releaseLock(); }
 }
 
-function releaseFood(d) {
+function releaseReservation(d) {
   var lock = LockService.getScriptLock();
   lock.tryLock(5000);
   try {
-    var rsh = sheet(TAB_RES), rrows = rsh.getDataRange().getValues();
+    var rsh   = sheet(TAB_RES);
+    var rrows = rsh.getDataRange().getValues();
+    var foodIds = d.foodIds || [];
+
     for (var i = 1; i < rrows.length; i++) {
       if (String(rrows[i][0]) === String(d.reservationId)) {
-        rsh.getRange(i+1, 7).setValue('cancelled'); break;
+        rsh.getRange(i+1, 7).setValue('cancelled');
+        // Pega os ids da planilha se não vieram no payload
+        if (!foodIds.length) {
+          var idsStr = String(rrows[i][1] || '');
+          foodIds = idsStr ? idsStr.split(',') : [];
+        }
+        break;
       }
     }
-    setFoodRow(sheet(TAB_FOODS), d.foodId, 'free', '', '', '');
+
+    // Libera todos os itens
+    var fsh = sheet(TAB_FOODS);
+    foodIds.forEach(function(fid) {
+      setFoodRow(fsh, fid.trim(), 'free', '', '', '');
+    });
+
     return { released: true };
   } finally { lock.releaseLock(); }
 }
@@ -337,27 +383,19 @@ function getSummary() {
   var res   = getReservations().filter(function(r){ return r.status !== 'cancelled'; });
   var foods = getFoods();
 
-  var totalCasais    = res.length;
-  var totalPessoas   = totalCasais * 2;
-  var confirmados    = res.filter(function(r){ return r.status === 'confirmed'; }).length;
-  var pendentes      = res.filter(function(r){ return r.status === 'pending'; }).length;
-  var arrecadado     = res.reduce(function(s, r){ return s + Number(r.valor || 0); }, 0);
-  var aConfirmar     = res.filter(function(r){ return r.status === 'pending'; })
-                         .reduce(function(s, r){ return s + Number(r.valor || 0); }, 0);
-
-  var livres    = foods.filter(function(f){ return f.status === 'free'; }).length;
-  var reservados= foods.filter(function(f){ return f.status !== 'free'; }).length;
+  var confirmados = res.filter(function(r){ return r.status === 'confirmed'; });
+  var pendentes   = res.filter(function(r){ return r.status === 'pending'; });
 
   return {
-    totalCasais:    totalCasais,
-    totalPessoas:   totalPessoas,
-    confirmados:    confirmados,
-    pendentes:      pendentes,
-    arrecadado:     arrecadado,
-    aConfirmar:     aConfirmar,
-    totalItems:     foods.length,
-    livres:         livres,
-    reservados:     reservados,
+    totalCasais:  res.length,
+    totalPessoas: res.length * 2,
+    confirmados:  confirmados.length,
+    pendentes:    pendentes.length,
+    arrecadado:   confirmados.reduce(function(s,r){ return s + Number(r.valor||0); }, 0),
+    aConfirmar:   pendentes.reduce(function(s,r){ return s + Number(r.valor||0); }, 0),
+    totalItems:   foods.length,
+    livres:       foods.filter(function(f){ return f.status === 'free'; }).length,
+    reservados:   foods.filter(function(f){ return f.status !== 'free'; }).length,
   };
 }
 
