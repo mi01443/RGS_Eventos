@@ -352,27 +352,43 @@ function releaseReservation(d) {
   try {
     var rsh   = sheet(TAB_RES);
     var rrows = rsh.getDataRange().getValues();
-    var foodIds = d.foodIds || [];
 
+    // Normaliza foodIds do payload: aceita array ou string separada por vírgula
+    var foodIds = [];
+    if (d.foodIds) {
+      if (Array.isArray(d.foodIds)) {
+        foodIds = d.foodIds.map(function(id){ return String(id).trim(); }).filter(Boolean);
+      } else {
+        foodIds = String(d.foodIds).split(',').map(function(id){ return id.trim(); }).filter(Boolean);
+      }
+    }
+
+    // Busca a reserva na planilha
     for (var i = 1; i < rrows.length; i++) {
       if (String(rrows[i][0]) === String(d.reservationId)) {
         rsh.getRange(i+1, 7).setValue('cancelled');
-        // Pega os ids da planilha se não vieram no payload
-        if (!foodIds.length) {
-          var idsStr = String(rrows[i][1] || '');
-          foodIds = idsStr ? idsStr.split(',') : [];
-        }
+        // SEMPRE lê os ids da planilha — fonte de verdade garantida
+        var idsStr = String(rrows[i][1] || '');
+        var idsFromSheet = idsStr ? idsStr.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+        // Merge: usa planilha como base, adiciona payload (garante cobertura total)
+        idsFromSheet.forEach(function(id){
+          if (id && foodIds.indexOf(id) === -1) foodIds.push(id);
+        });
         break;
       }
     }
 
-    // Libera todos os itens
+    if (!foodIds.length) {
+      return { released: false, error: 'Nenhum item encontrado para liberar' };
+    }
+
+    // Libera TODOS os itens encontrados
     var fsh = sheet(TAB_FOODS);
     foodIds.forEach(function(fid) {
-      setFoodRow(fsh, fid.trim(), 'free', '', '', '');
+      if (fid) setFoodRow(fsh, fid, 'free', '', '', '');
     });
 
-    return { released: true };
+    return { released: true, count: foodIds.length };
   } finally { lock.releaseLock(); }
 }
 
