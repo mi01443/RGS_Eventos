@@ -974,7 +974,7 @@ a { text-decoration: none; }
 // ════════════════════════════════════════════════════════════
 //  ⚙️  CONFIGURE AQUI
 // ════════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxEU2E9Ffp9gQRfiTfLYAtWODnQ-cPpVAu1xtxqtbyV1DfDy6yNYxA-_TGjayIKxdSn/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/SEU_ID_AQUI/exec';
 const POLL_MS   = 8000;
 
 // ════════════════════════════════════════════════════════════
@@ -1476,23 +1476,42 @@ async function removeFood(id){
 
 async function releaseRes(resId,foodIds){
   if(!confirm('Liberar a reserva? Os itens voltam a ficar disponíveis.')) return;
-  const ids=Array.isArray(foodIds)?foodIds:[foodIds];
+  const ids = (Array.isArray(foodIds) ? foodIds : String(foodIds).split(',')).map(s=>String(s).trim()).filter(Boolean);
+  if(!ids.length){ toast('Erro: nenhum item identificado na reserva','err'); return; }
   try{
-    if(!S.mock){const r=await api('releaseReservation',{reservationId:resId,foodIds:ids});if(!r.ok){toast('Erro ao liberar','err');return;}}
+    if(!S.mock){
+      const r=await api('releaseReservation',{reservationId:resId,foodIds:ids});
+      if(!r.ok){toast('Erro ao liberar: '+(r.error||''),'err');return;}
+    }
     const res=S.reservations.find(r=>r.id===resId);if(res)res.status='cancelled';
-    ids.forEach(id=>{const food=S.foods.find(f=>f.id===id);if(food){food.status='free';food.person1='';food.person2='';food.phone='';}});
-    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments(); toast('Reserva liberada.');
+    ids.forEach(id=>{
+      const food=S.foods.find(f=>f.id===id);
+      if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
+    });
+    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments();
+    _initPaymentDelegation();
+    toast('Reserva liberada.');
   }catch(e){toast('Erro de conexão','err');}
 }
 
 async function cancelRes(resId,foodIds){
   if(!confirm('Cancelar esta reserva confirmada? Os itens voltam a ficar disponíveis.')) return;
-  const ids=Array.isArray(foodIds)?foodIds:[foodIds];
+  // Garante que ids é sempre um array limpo de strings não-vazias
+  const ids = (Array.isArray(foodIds) ? foodIds : String(foodIds).split(',')).map(s=>String(s).trim()).filter(Boolean);
+  if(!ids.length){ toast('Erro: nenhum item identificado na reserva','err'); return; }
   try{
-    if(!S.mock){const r=await api('releaseReservation',{reservationId:resId,foodIds:ids});if(!r.ok){toast('Erro ao cancelar','err');return;}}
+    if(!S.mock){
+      const r=await api('releaseReservation',{reservationId:resId,foodIds:ids});
+      if(!r.ok){toast('Erro ao cancelar: '+(r.error||''),'err');return;}
+    }
     const res=S.reservations.find(r=>r.id===resId);if(res)res.status='cancelled';
-    ids.forEach(id=>{const food=S.foods.find(f=>f.id===id);if(food){food.status='free';food.person1='';food.person2='';food.phone='';}});
-    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments(); toast('Reserva cancelada — itens liberados.','ok');
+    ids.forEach(id=>{
+      const food=S.foods.find(f=>f.id===id);
+      if(food){food.status='free';food.person1='';food.person2='';food.phone='';}
+    });
+    renderFoodList(); renderHeader(); renderAdminFoodList(); renderPayments();
+    _initPaymentDelegation();
+    toast('Reserva cancelada — itens liberados.','ok');
   }catch(e){toast('Erro de conexão','err');}
 }
 
@@ -1561,25 +1580,39 @@ function renderPayments(){
 }
 
 // Event delegation para botões do painel de pagamentos
-// Evita completamente JSON inline em atributos onclick
+// Listener único no documento — não depende de elementos recriados pelo renderPayments
 function _initPaymentDelegation(){
-  ['payPend','payConf'].forEach(function(elId){
-    const container=document.getElementById(elId);
-    if(!container||container._delegated) return;
-    container._delegated=true;
-    container.addEventListener('click',async function(e){
-      const btn=e.target.closest('.pc-action');
-      if(!btn) return;
-      const card=btn.closest('.pc[data-rid]');
-      if(!card) return;
-      const resId = card.dataset.rid;
-      const phone = card.dataset.phone;
-      const foodIds = JSON.parse(atob(card.dataset.fids));
-      const action = btn.dataset.action;
-      if(action==='confirm') await _doConfirm(resId,phone,foodIds,btn);
-      if(action==='release') await releaseRes(resId,foodIds);
-      if(action==='cancel')  await cancelRes(resId,foodIds);
-    });
+  if(document._pcDelegated) return;
+  document._pcDelegated = true;
+  document.addEventListener('click', async function(e){
+    const btn = e.target.closest('.pc-action');
+    if(!btn) return;
+    const card = btn.closest('.pc[data-rid]');
+    if(!card) return;
+
+    const resId   = card.dataset.rid;
+    const phone   = card.dataset.phone || '';
+    const action  = btn.dataset.action;
+
+    // Decodifica foodIds de base64 — sempre retorna array
+    let foodIds = [];
+    try {
+      const decoded = JSON.parse(atob(card.dataset.fids || 'W10='));
+      foodIds = Array.isArray(decoded) ? decoded : [String(decoded)].filter(Boolean);
+    } catch(err) {
+      // Fallback: tenta como string separada por vírgula (compatibilidade)
+      const raw = card.dataset.fids || '';
+      foodIds = raw.split(',').map(s=>s.trim()).filter(Boolean);
+    }
+
+    if(!foodIds.length) {
+      toast('Erro: itens da reserva não identificados', 'err');
+      return;
+    }
+
+    if(action==='confirm') await _doConfirm(resId, phone, foodIds, btn);
+    if(action==='release') await releaseRes(resId, foodIds);
+    if(action==='cancel')  await cancelRes(resId, foodIds);
   });
 }
 
