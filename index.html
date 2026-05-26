@@ -974,7 +974,7 @@ a { text-decoration: none; }
 // ════════════════════════════════════════════════════════════
 //  ⚙️  CONFIGURE AQUI
 // ════════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwxdd1lcMA9ueQn5TEci4fbLTnrqXiPwmEwXJFjIoko6N4Fhqgu9HMEJPcfhHWC0N_Z/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycby6blb4Dnb4wX6_AaZwSCiRPUq9dL1dXSruSIVeTaU66th2nvi5-00W0WwPoO7p8P_Z/exec';
 const POLL_MS   = 8000;
 
 // ════════════════════════════════════════════════════════════
@@ -1573,11 +1573,13 @@ function renderPayments(){
       const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
       const ts=r.ts?new Date(r.ts).toLocaleString('pt-BR'):'';
       const ev=S.event||{},d=fmtDate(ev.date),t=fmtTime(ev.time);
-      const foodIds=Array.isArray(r.foodIds)?r.foodIds:([r.foodId].filter(Boolean));
+      // foodIds já vem como array do backend (uma linha por item agrupa no frontend)
+      const foodIds=Array.isArray(r.foodIds)?r.foodIds.map(String):[String(r.foodId||'')].filter(Boolean);
       // Usa data-rid (reservationId) e data-fids (foodIds codificado em base64) para evitar
       // problemas com aspas e caracteres especiais dentro de atributos onclick
       const fidsB64=btoa(JSON.stringify(foodIds));
-      const itemsList=(r.foodNames||r.foodName||'—').split(',').map(n=>`🍽 ${n.trim()}`).join('\n');
+      const _names=Array.isArray(r.foodNames)?r.foodNames:String(r.foodNames||r.foodName||'—').split(',');
+      const itemsList=_names.map(n=>`🍽 ${n.trim()}`).filter(Boolean).join('\n');
       const waMsg=encodeURIComponent(
         `Olá *${r.person1||''}* e *${r.person2||''}*! 🎉\n\n`+
         `✅ Pagamento *confirmado*:\n\n`+
@@ -1590,7 +1592,7 @@ function renderPayments(){
       return `<div class="pc" data-rid="${r.id}" data-phone="${r.phone||''}" data-fids="${fidsB64}" data-status="${r.status}">
         <div style="flex:1;">
           <div class="pc-name">${casal}</div>
-          <div class="pc-det">📱 ${r.phone||'—'}<br>${(r.foodNames||r.foodName||'').split(',').map(n=>`🍽 ${n.trim()}`).join('<br>')}<br>💰 R$ ${fmtMoney(r.valor)}${ts?`<br>🕐 ${ts}`:''}</div>
+          <div class="pc-det">📱 ${r.phone||'—'}<br>${(Array.isArray(r.foodNames)?r.foodNames:String(r.foodNames||r.foodName||'').split(',')).map(n=>`🍽 ${n.trim()}`).filter(Boolean).join('<br>')}<br>💰 R$ ${fmtMoney(r.valor)}${ts?`<br>🕐 ${ts}`:''}</div>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
           <span class="pc-badge ${r.status}">${r.status==='confirmed'?'Confirmado ✓':'Aguardando'}</span>
@@ -1670,7 +1672,8 @@ async function _doConfirm(resId,phone,foodIds,btn){
     const res2=S.reservations.find(r=>r.id===resId)||{};
     const casal=[res2.person1,res2.person2].filter(Boolean).join(' & ')||'';
     const d=fmtDate(ev.date),t=fmtTime(ev.time);
-    const itemsList=(res2.foodNames||res2.foodName||'').split(',').map(n=>`🍽 ${n.trim()}`).join('\n');
+    const _n2=Array.isArray(res2.foodNames)?res2.foodNames:String(res2.foodNames||res2.foodName||'').split(',');
+    const itemsList=_n2.map(n=>`🍽 ${n.trim()}`).filter(Boolean).join('\n');
     const msg=encodeURIComponent(
       `Olá *${res2.person1||''}* e *${res2.person2||''}*! 🎉\n\n`+
       `✅ Pagamento *confirmado*:\n\n`+
@@ -1728,7 +1731,8 @@ function sendResumoWa(){
   const conf=res.filter(r=>r.status==='confirmed'),pend=res.filter(r=>r.status==='pending');
   const lista=res.map((r,i)=>{
     const casal=[r.person1,r.person2].filter(Boolean).join(' & ')||'—';
-    const itens=(r.foodNames||r.foodName||'').split(',').map(n=>n.trim()).join(', ');
+    const _rn=Array.isArray(r.foodNames)?r.foodNames:String(r.foodNames||r.foodName||'').split(',');
+    const itens=_rn.map(n=>n.trim()).filter(Boolean).join(', ');
     return `${i+1}. ${r.status==='confirmed'?'✅':'⏳'} ${casal} — ${itens}`;
   }).join('\n');
   const msg=encodeURIComponent(
@@ -1750,7 +1754,7 @@ function renderParticipantList(){
     <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 4px;border-bottom:1px solid var(--bord);gap:10px;flex-wrap:wrap;">
       <div>
         <div style="font-size:14px;font-weight:500;color:var(--cream);">${i+1}. ${[r.person1,r.person2].filter(Boolean).join(' & ')||'—'}</div>
-        <div style="font-size:11px;color:var(--muted);">💍 ${(r.foodNames||r.foodName||'—')} · 📱 ${r.phone}</div>
+        <div style="font-size:11px;color:var(--muted);">💍 ${(Array.isArray(r.foodNames)?r.foodNames:String(r.foodNames||r.foodName||'—').split(',')).map(n=>n.trim()).filter(Boolean).join(', ')} · 📱 ${r.phone}</div>
       </div>
       <span class="pc-badge ${r.status}">${r.status==='confirmed'?'Confirmado':'Aguardando'}</span>
     </div>`).join('')}</div>`;
