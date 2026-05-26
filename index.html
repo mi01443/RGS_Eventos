@@ -974,7 +974,7 @@ a { text-decoration: none; }
 // ════════════════════════════════════════════════════════════
 //  ⚙️  CONFIGURE AQUI
 // ════════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz5FZBST9ogS_TgiIlPSdwVUREuQ1CgVFH4ku_jVwIOUcX4n5FGTijK31T3e3HKiKtJ/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycby5okiIevk3eh3GvvDB4epQAQAeBHiYMpca0E8bVbkyCXfhDR4ViNyoNxUgZTLz7ENG/exec';
 const POLL_MS   = 8000;
 
 // ════════════════════════════════════════════════════════════
@@ -1001,9 +1001,31 @@ function hideSplash() {
 // ════════════════════════════════════════════════════════════
 //  API
 // ════════════════════════════════════════════════════════════
+// Leituras simples: GET (sem body pesado)
+// Escritas com arrays/dados: POST via form-urlencoded
+// O Apps Script aceita POST sem CORS problems quando publicado como "Qualquer pessoa"
+const READ_ACTIONS = new Set([
+  'ping','getConfig','getFoods','getReservations','getSummary'
+]);
+
 async function api(action, data) {
-  const pl  = data ? encodeURIComponent(JSON.stringify(data)) : '%7B%7D';
-  const res = await fetch(`${SHEET_URL}?action=${action}&payload=${pl}`, { cache:'no-store' });
+  if (READ_ACTIONS.has(action)) {
+    // GET simples para leituras
+    const res = await fetch(`${SHEET_URL}?action=${action}`, { cache:'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+  }
+  // POST para escritas — evita limite/truncamento de URL em arrays grandes
+  // Apps Script redireciona POST para nova URL, então precisamos seguir o redirect
+  const body = new URLSearchParams({
+    action: action,
+    payload: JSON.stringify(data || {})
+  });
+  const res = await fetch(SHEET_URL, {
+    method: 'POST',
+    body: body,
+    redirect: 'follow',
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }
