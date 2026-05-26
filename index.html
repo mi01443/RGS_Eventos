@@ -974,7 +974,7 @@ a { text-decoration: none; }
 // ════════════════════════════════════════════════════════════
 //  ⚙️  CONFIGURE AQUI
 // ════════════════════════════════════════════════════════════
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycby5okiIevk3eh3GvvDB4epQAQAeBHiYMpca0E8bVbkyCXfhDR4ViNyoNxUgZTLz7ENG/exec';
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwxdd1lcMA9ueQn5TEci4fbLTnrqXiPwmEwXJFjIoko6N4Fhqgu9HMEJPcfhHWC0N_Z/exec';
 const POLL_MS   = 8000;
 
 // ════════════════════════════════════════════════════════════
@@ -1303,6 +1303,10 @@ async function goSt3() {
   const btn = document.getElementById('btnSt3');
   btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Registrando...';
 
+  // Deduplica o carrinho — garante que cada id aparece apenas uma vez
+  const uniqueCart = [...new Set(S.cart)];
+  S.cart = uniqueCart;
+
   const foodNames = S.cart.map(id=>S.foods.find(f=>f.id===id)?.name||'').filter(Boolean);
 
   if (!S.mock) {
@@ -1434,7 +1438,8 @@ async function addFood() {
   if(!name){toast('Digite o nome do item');return;}
   const btn=document.getElementById('btnAddFood');
   btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Adicionando...';
-  const id=String(Date.now());
+  // Garante ID único mesmo se chamado em sequência rápida
+  const id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + '_' + Math.random().toString(36).slice(2,8);
   try {
     if(!S.mock){const r=await api('addFood',{id,name,type});if(!r.ok){toast('Erro: '+(r.error||''),'err');return;}}
     S.foods.push({id,name,type,status:'free',person1:'',person2:'',phone:''});
@@ -1472,7 +1477,7 @@ async function importFoods(){
   const btn=document.getElementById('btnImport');
   btn.disabled=true; btn.innerHTML='<span class="sp-sm"></span> Importando...';
   try{
-    const items=S.importItems.map((it,i)=>({...it,id:String(Date.now()+i)}));
+    const items=S.importItems.map((it,i)=>({...it,id:String(Date.now()+'_'+i+'_'+Math.random().toString(36).slice(2,6))}));
     if(!S.mock){const r=await api('addFoodsBatch',{items});if(!r.ok){toast('Erro na importação','err');return;}}
     items.forEach(it=>S.foods.push({id:it.id,name:it.name,type:it.type,status:'free',person1:'',person2:'',phone:''}));
     clearImport(); renderFoodList(); renderAdminFoodList(); renderHeader();
