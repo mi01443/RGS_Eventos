@@ -223,15 +223,22 @@ function removeFood(d) {
 }
 
 function setFoodRow(sh, foodId, status, person1, person2, phone) {
-  var rows = sh.getDataRange().getValues();
+  // Força leitura fresca (sem cache) pedindo os valores novamente
+  var lastRow = sh.getLastRow();
+  if (lastRow < 2) return false;
+  var rows = sh.getRange(1, 1, lastRow, 1).getValues(); // só col A (id)
   for (var i = 1; i < rows.length; i++) {
-    if (String(rows[i][0]) === String(foodId)) {
-      sh.getRange(i+1, 4, 1, 5).setValues([[
-        status, person1||'', person2||'', phone||'', new Date().toISOString()
-      ]]);
+    if (String(rows[i][0]).trim() === String(foodId).trim()) {
+      sh.getRange(i+1, 4).setValue(status);
+      sh.getRange(i+1, 5).setValue(person1  || '');
+      sh.getRange(i+1, 6).setValue(person2  || '');
+      sh.getRange(i+1, 7).setValue(phone    || '');
+      sh.getRange(i+1, 8).setValue(new Date().toISOString());
+      SpreadsheetApp.flush(); // grava imediatamente
       return true;
     }
   }
+  Logger.log('setFoodRow: foodId nao encontrado: ' + foodId);
   return false;
 }
 
@@ -319,76 +326,108 @@ function getReservations() {
 
 function confirmPayment(d) {
   var lock = LockService.getScriptLock();
-  lock.tryLock(5000);
+  if (!lock.tryLock(8000)) return { ok: false, error: 'Servidor ocupado, tente novamente.' };
   try {
-    var rsh   = sheet(TAB_RES);
-    var rrows = rsh.getDataRange().getValues();
+    var rsh     = sheet(TAB_RES);
+    var lastRes = rsh.getLastRow();
     var foodIds = [], p1 = '', p2 = '', phone = '', valor = '0';
+    var found   = false;
 
-    for (var i = 1; i < rrows.length; i++) {
-      if (String(rrows[i][0]) === String(d.reservationId)) {
-        rsh.getRange(i+1, 7).setValue('confirmed');
-        var idsStr = String(rrows[i][1] || '');
-        foodIds = idsStr ? idsStr.split(',') : (d.foodIds || []);
-        p1 = String(rrows[i][3]); p2 = String(rrows[i][4]);
-        phone = String(rrows[i][5]); valor = String(rrows[i][7]);
+    // Lê cada linha individualmente para evitar cache
+    for (var i = 2; i <= lastRes; i++) {
+      var row = rsh.getRange(i, 1, 1, 9).getValues()[0];
+      if (String(row[0]).trim() === String(d.reservationId).trim()) {
+        // Atualiza status da reserva
+        rsh.getRange(i, 7).setValue('confirmed');
+        SpreadsheetApp.flush();
+
+        // Extrai foodIds da planilha (coluna B = índice 1)
+        var idsStr = String(row[1] || '').trim();
+        foodIds = idsStr
+          ? idsStr.split(',').map(function(s){ return s.trim(); }).filter(Boolean)
+          : [];
+
+        // Fallback: usa payload se planilha estiver vazia
+        if (!foodIds.length && d.foodIds) {
+          foodIds = Array.isArray(d.foodIds)
+            ? d.foodIds.map(function(x){ return String(x).trim(); }).filter(Boolean)
+            : String(d.foodIds).split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+        }
+
+        p1    = String(row[3] || '');
+        p2    = String(row[4] || '');
+        phone = String(row[5] || '');
+        valor = String(row[7] || '0');
+        found = true;
         break;
       }
     }
 
-    // Atualiza todos os itens para 'confirmed'
+    if (!found) return { ok: false, error: 'Reserva nao encontrada: ' + d.reservationId };
+    if (!foodIds.length) return { ok: false, error: 'Nenhum item encontrado para confirmar' };
+
+    // Atualiza status de cada food item
     var fsh = sheet(TAB_FOODS);
+    var updated = 0;
     foodIds.forEach(function(fid) {
-      setFoodRow(fsh, fid.trim(), 'confirmed', p1, p2, phone);
+      if (setFoodRow(fsh, fid, 'confirmed', p1, p2, phone)) updated++;
     });
 
-    return { confirmed: true, person1: p1, person2: p2, phone: phone, valor: valor };
+    Logger.log('confirmPayment: ' + updated + '/' + foodIds.length + ' itens confirmados para reserva ' + d.reservationId);
+    return { confirmed: true, updated: updated, total: foodIds.length, person1: p1, person2: p2, phone: phone, valor: valor };
   } finally { lock.releaseLock(); }
 }
 
 function releaseReservation(d) {
   var lock = LockService.getScriptLock();
-  lock.tryLock(5000);
+  if (!lock.tryLock(8000)) return { ok: false, error: 'Servidor ocupado, tente novamente.' };
   try {
-    var rsh   = sheet(TAB_RES);
-    var rrows = rsh.getDataRange().getValues();
-
-    // Normaliza foodIds do payload: aceita array ou string separada por vírgula
+    var rsh     = sheet(TAB_RES);
+    var lastRes = rsh.getLastRow();
     var foodIds = [];
-    if (d.foodIds) {
-      if (Array.isArray(d.foodIds)) {
-        foodIds = d.foodIds.map(function(id){ return String(id).trim(); }).filter(Boolean);
-      } else {
-        foodIds = String(d.foodIds).split(',').map(function(id){ return id.trim(); }).filter(Boolean);
-      }
-    }
+    var found   = false;
 
-    // Busca a reserva na planilha
-    for (var i = 1; i < rrows.length; i++) {
-      if (String(rrows[i][0]) === String(d.reservationId)) {
-        rsh.getRange(i+1, 7).setValue('cancelled');
-        // SEMPRE lê os ids da planilha — fonte de verdade garantida
-        var idsStr = String(rrows[i][1] || '');
-        var idsFromSheet = idsStr ? idsStr.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
-        // Merge: usa planilha como base, adiciona payload (garante cobertura total)
-        idsFromSheet.forEach(function(id){
-          if (id && foodIds.indexOf(id) === -1) foodIds.push(id);
-        });
+    // Lê cada linha individualmente
+    for (var i = 2; i <= lastRes; i++) {
+      var row = rsh.getRange(i, 1, 1, 9).getValues()[0];
+      if (String(row[0]).trim() === String(d.reservationId).trim()) {
+        // Atualiza status
+        rsh.getRange(i, 7).setValue('cancelled');
+        SpreadsheetApp.flush();
+
+        // Lê foodIds da planilha (fonte de verdade)
+        var idsStr = String(row[1] || '').trim();
+        foodIds = idsStr
+          ? idsStr.split(',').map(function(s){ return s.trim(); }).filter(Boolean)
+          : [];
+
+        found = true;
         break;
       }
     }
 
-    if (!foodIds.length) {
-      return { released: false, error: 'Nenhum item encontrado para liberar' };
+    // Merge com payload (cobre casos onde planilha possa estar incompleta)
+    if (d.foodIds) {
+      var payloadIds = Array.isArray(d.foodIds)
+        ? d.foodIds.map(function(x){ return String(x).trim(); }).filter(Boolean)
+        : String(d.foodIds).split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+      payloadIds.forEach(function(id){
+        if (id && foodIds.indexOf(id) === -1) foodIds.push(id);
+      });
     }
 
-    // Libera TODOS os itens encontrados
+    if (!found) return { ok: false, error: 'Reserva nao encontrada: ' + d.reservationId };
+    if (!foodIds.length) return { ok: false, error: 'Nenhum item encontrado para liberar' };
+
+    // Libera cada item
     var fsh = sheet(TAB_FOODS);
+    var released = 0;
     foodIds.forEach(function(fid) {
-      if (fid) setFoodRow(fsh, fid, 'free', '', '', '');
+      if (fid && setFoodRow(fsh, fid, 'free', '', '', '')) released++;
     });
 
-    return { released: true, count: foodIds.length };
+    Logger.log('releaseReservation: ' + released + '/' + foodIds.length + ' itens liberados para reserva ' + d.reservationId);
+    return { released: true, count: released, total: foodIds.length };
   } finally { lock.releaseLock(); }
 }
 
